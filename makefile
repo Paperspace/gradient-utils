@@ -1,9 +1,6 @@
 SRC=$(shell pwd)
 PIP=pip3
-PYTHON=python
-PYTEST_COV=pytest --cov=gradient-sdk
-HELM:=helm
-RELEASE_NAME=gradient-sdk
+RELEASE_NAME=gradient_sdk
 PWD=$(shell pwd)
 
 export PYTHONPATH:=$(SRC)

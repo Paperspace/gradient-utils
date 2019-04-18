@@ -19,6 +19,7 @@ with open("README.md", "r") as fh:
 
 requirements = [
     "wheel",
+    "hyperopt",
 ]
 
 dev_requirements = [
