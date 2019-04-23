@@ -1,17 +1,31 @@
 import base64
 import json
+import logging
 import os
 
-from exceptions import ConfigError
-# TODO set env variable for local or PS CLOUD (GCP)
+from pymongo import MongoClient
+from pymongo.errors import ServerSelectionTimeoutError
+
+from gradient_sdk.exceptions import ConfigError
+
+logger = logging.getLogger(__name__)
+
+
+def _get_work_env():
+    env = os.environ.get("WORK_ENV")
+
+    if not env:
+        env = "local"
+
+    return env
 
 
 def _mongo_db_host():
-    return os.environ["MONGO_DB_HOST"]
+    return os.environ.get("MONGO_DB_HOST")
 
 
 def _mongo_db_port():
-    return os.environ["MONGO_DB_PORT"]
+    return os.environ.get("MONGO_DB_PORT")
 
 
 def _experiment_name():
@@ -22,11 +36,44 @@ def _get_paperspace_tf_config():
     tf_config = os.environ.get("PS_CONFIG")
 
     if not tf_config:
-        return
+        env = _get_work_env()
+        if env != "local":
+            return
+        else:
+            raise ConfigError(
+                component="TF Config",
+                message="Something went wrong. Check if you set PS_CONFIG"
+            )
+    if tf_config:
+        return json.loads(base64.urlsafe_b64decode(tf_config).decode("utf-8"))
 
-    paperspace_tf_config = json.loads(base64.urlsafe_b64decode(tf_config).decode("utf-8"))
 
-    return paperspace_tf_config
+def _check_mongo_client_connection():
+    """
+    Function to check if connection to mongo is possible.
+
+    :return: bool value if ping to mongo db ended with success
+    """
+    mongo_status = False
+
+    mongo_port = _mongo_db_port()
+    if mongo_port:
+        mongo_port = int(mongo_port)
+
+    client = MongoClient(
+        host=_mongo_db_host(),
+        port=mongo_port
+    )
+    try:
+        resp = client.db_name.command('ping')
+    except ServerSelectionTimeoutError:
+        logger.warning("Check mongo db connection - connection to mongo db timeout")
+        return mongo_status
+
+    if resp.get("ok"):
+        mongo_status = True
+
+    return mongo_status
 
 
 def get_mongo_conn_str():
@@ -42,21 +89,21 @@ def get_mongo_conn_str():
     experiment_name = _experiment_name()
 
     if mongo_host and mongo_port and experiment_name:
-        return f"mongo://{_mongo_db_host()}:{_mongo_db_port()}/{_experiment_name()}/jobs"
+        return "mongo://%s:%s/%s/jobs" % (mongo_host, mongo_port, experiment_name)
     else:
+        error_message = "Something went wrong. " \
+                        "Check os variables that are needed for constricting mongo connection string: " \
+                        "- MONGO_DB_HOST: %s  " \
+                        "- MONGO_DB_PORT: %s " \
+                        "- EXPERIMENT_NAME: %s" % (mongo_host, mongo_port, experiment_name)
         raise ConfigError(
             component="Mongo connection",
-            message=f"""
-            Something went wrong. Check os variables that are needed for constricting mongo connection string:
-            MONGO_DB_HOST: {mongo_host}
-            MONGO_DB_PORT: {mongo_port}
-            EXPERIMENT_NAME: {experiment_name}
-            """
+            message=error_message
         )
 
 
 def data_dir():
-    return os.path.abspath(os.environ.get("PS_JOBSPACE", "/storage"))
+    return os.environ.get("PS_JOBSPACE", "/storage")
 
 
 def model_dir(model_name):
