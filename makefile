@@ -17,3 +17,6 @@ pip-install-dev: pip-update
 
 run-tests:
 	tox
+
+build:
+	python setup.py sdist bdist_wheel
