@@ -115,16 +115,16 @@ def export_dir(model_name):
 
 
 def worker_hosts():
-    return os.environ.get("WORKER_HOSTS", "")
+    return os.environ.get("WORKER_HOSTS")
 
 
 def ps_hosts():
-    return os.environ.get("PS_HOSTS", "")
+    return os.environ.get("PS_HOSTS")
 
 
 def task_index():
-    return os.environ.get("INDEX", "")
+    return os.environ.get("INDEX")
 
 
 def job_name():
-    return os.environ.get("TYPE", "")
+    return os.environ.get("TYPE")
