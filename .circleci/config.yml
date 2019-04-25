@@ -9,6 +9,7 @@ jobs:
   test:
     executor: python-tox
     steps:
+      - checkout
       - run:
           name: Check path where we are
           command: pwd
