@@ -16,9 +16,9 @@ jobs:
       - run:
           name: List elements in current folder
           command: ls -al
-#      - run:
-#          name: Run docker image with tests
-#          command: docker run -it -v ..:/gradient-sdk -w /gradient-sdk themattrix/tox-base make run-tests
+      - run:
+          name: Run tests
+          command: make run-tests
 
 workflows:
   version: 2.1
