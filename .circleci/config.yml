@@ -33,8 +33,8 @@ workflows:
     jobs:
       - test
       - build:
-          requires:
-            - test
           filters:
             tags:
               only: /^v.*/
+          requires:
+              - test
