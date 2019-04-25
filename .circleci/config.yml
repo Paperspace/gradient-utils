@@ -9,7 +9,12 @@ jobs:
   test:
     executor: python-tox
     steps:
-      - run: make run-tests
+      - run:
+          name: List available containers
+          command: docker  ps -a
+      - run:
+          name: Run docker image with tests
+          command: docker run -it -v ..:/gradient-sdk -w /gradient-sdk themattrix/tox-base make run-tests
 
 workflows:
   version: 2.1
