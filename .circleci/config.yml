@@ -29,3 +29,4 @@ workflows:
   pipeline:
     jobs:
       - test
+      - build
