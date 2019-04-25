@@ -1,25 +1,18 @@
 version: 2.1
 
-orbs:
-  python-tools: paperspace/python-tools@0.0.3
+executors:
+  python-tox:
+    docker:
+      image: themattrix/tox-base
 
-_package_name: &package_name gradient_sdk
-_test_path: &test_path tests
-
+jobs:
+  test:
+    executor: python-tox
+    steps:
+      - run: make run-tests
 
 workflows:
   version: 2.1
   pipeline:
     jobs:
-      - python-tools/test:
-          name: test
-          package_name: *package_name
-          test_path: *test_path
-
-#      -python-tools/tag:
-#          name: tag
-#
-#      - python-tools/package_and_publish:
-#          name: pip-deploy
-#          requires:
-#              - tag
+      - test

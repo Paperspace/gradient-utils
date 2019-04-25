@@ -18,5 +18,14 @@ pip-install-dev: pip-update
 run-tests:
 	tox
 
-build:
+clean-build:
+	rm -rf build dist
+
+build: clean-build
 	python setup.py sdist bdist_wheel
+
+publish-test: build
+	twine upload -r test dist/*
+
+publish: build
+	twine upload -r pypi dist/*
