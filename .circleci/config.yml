@@ -11,14 +11,18 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Check path where we are
-          command: pwd
-      - run:
-          name: List elements in current folder
-          command: ls -al
-      - run:
           name: Run tests
           command: make run-tests
+  build:
+    executor: python-tox
+    steps:
+      - checkout
+      - run:
+          name: Build Gradient SDK package
+          command: make build
+      - run:
+          name: List all elements in current location
+          command: ls -al
 
 workflows:
   version: 2.1
