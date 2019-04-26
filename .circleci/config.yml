@@ -47,7 +47,10 @@ workflows:
   pipeline:
     jobs:
       - test
-      - publish:
+      - hold:
           type: approval
           requires:
             - test
+      - publish:
+          requires:
+            - hold
