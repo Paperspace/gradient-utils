@@ -25,7 +25,7 @@ jobs:
           command: make pip-install-dev
       - run:
           name: Set correct version for build
-          command: sed -i 's/0.0.1/${sdk_version}/' gradient_sdk/__init__.py
+          command: sed -i "s/0.0.1/$sdk_version/" gradient_sdk/__init__.py
       - run:
           name: Check version change
           command: cat gradient_sdk/__init__.py
