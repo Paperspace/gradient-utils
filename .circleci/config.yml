@@ -38,6 +38,7 @@ jobs:
   publish:
     executor: python-tox
     steps:
+      - checkout
       - run:
           name: Install requirements to publish package
           command: echo "Test"
