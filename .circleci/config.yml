@@ -43,7 +43,7 @@ jobs:
           command: echo "Test"
       - run:
           name: Show env latest sdk version
-          command: echo "$sdk_version"
+          command: echo "${sdk_version}" && export | grep sdk_version
 
 workflows:
   version: 2.1
