@@ -58,8 +58,9 @@ workflows:
           requires:
             - test
       - publish:
+          type: approval
           requires:
             - build
           filters:
             tags:
-              only: /^[0-9]*.[0-9]*.[0-9]*/
+              only: /^[0-9]+\.[0-9]+\.[0-9]+$/
