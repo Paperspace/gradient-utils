@@ -41,6 +41,9 @@ jobs:
       - run:
           name: Install requirements to publish package
           command: echo "Test"
+      - run:
+          name: Show env latest sdk version
+          command: echo "$sdk_version"
 
 workflows:
   version: 2.1
