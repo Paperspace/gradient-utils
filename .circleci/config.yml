@@ -58,7 +58,6 @@ workflows:
           requires:
             - test
       - publish:
-          type: approval
           requires:
             - build
           filters:
