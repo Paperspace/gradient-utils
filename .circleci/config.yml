@@ -42,8 +42,11 @@ jobs:
           name: Install requirements to publish package
           command: echo "Test"
       - run:
+          name: Get latest version from tags
+          command: echo 'export sdk_version="$(git describe --tags --abbrev=0)"' >> $BASH_ENV
+      - run:
           name: Show env latest sdk version
-          command: echo "${sdk_version}" && export | grep sdk_version
+          command: echo "${sdk_version}"
 
 workflows:
   version: 2.1
