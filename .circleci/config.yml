@@ -13,10 +13,6 @@ jobs:
       - run:
           name: Run tests
           command: make run-tests
-  build:
-    executor: python-tox
-    steps:
-      - checkout
       - run:
           name: Get latest version from tags
           command: echo export sdk_version="$(git describe --tags --abbrev=0 | sed -r 's/.*(([0-9]+\.){2}([0-9]+))/\1/')" >> $BASH_ENV
@@ -27,36 +23,30 @@ jobs:
           name: Set correct version for build
           command: sed -i "s/0.0.1/$sdk_version/" gradient_sdk/__init__.py
       - run:
-          name: Check version change
-          command: cat gradient_sdk/__init__.py
-      - run:
           name: Build Gradient SDK package
           command: make build
-      - run:
-          name: List all elements in current location
-          command: pwd && ls -al
   publish:
     executor: python-tox
     steps:
       - checkout
       - run:
           name: Install requirements to publish package
-          command: echo "Test"
+          command: make pip-install-dev
       - run:
           name: Get latest version from tags
           command: echo export sdk_version="$(git describe --tags --abbrev=0 | sed -r 's/.*(([0-9]+\.){2}([0-9]+))/\1/')" >> $BASH_ENV
       - run:
-          name: Show env latest sdk version
-          command: echo "${sdk_version}"
+          name: Set correct version for build
+          command: sed -i "s/0.0.1/$sdk_version/" gradient_sdk/__init__.py
+      - run:
+          name: Publish package
+          command: make publish
 
 workflows:
   version: 2.1
   pipeline:
     jobs:
       - test
-      - build:
-          requires:
-            - test
       - publish:
           type: approval
           requires:
