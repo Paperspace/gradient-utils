@@ -19,7 +19,7 @@ jobs:
       - checkout
       - run:
           name: Get latest version from tags
-          command: echo 'export sdk_version="$(git describe --tags)"' >> $BASH_ENV
+          command: echo 'export sdk_version="$(git describe --tags --abbrev=0)"' >> $BASH_ENV
       - run:
           name: Install package requirements
           command: make pip-install-dev
