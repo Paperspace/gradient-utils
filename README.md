@@ -19,12 +19,10 @@ pip install gradient-sdk
 
 ## 1. Multinode Helper functions
 
-# Multinode GRPC Tensorflow
+### Multinode GRPC Tensorflow
 
 Setting up TF_CONFIG environment variable
 For multi-worker training, as mentioned before, you need to us set "TF_CONFIG" environment variable for each binary running in your cluster. The "TF_CONFIG" environment variable is a JSON string which specifies what tasks constitute a cluster, their addresses and each task's role in the cluster. We provide a Kubernetes template in the tensorflow/ecosystem repo which sets "TF_CONFIG" for your training tasks.
-
-
 
 **get_tf_config()**
 
