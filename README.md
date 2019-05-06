@@ -28,7 +28,7 @@ For multi-worker training, you need to set the `TF_CONFIG` environment variable 
 
 Function to set value of `TF_CONFIG` when run on machines within Paperspace infrastructure.
 
-It can raise a `ConfigError` exception (with pertinent error message) if there's a problem with its configuration in a particular machine.
+It can raise a `ConfigError` exception with message if there's a problem with its configuration in a particular machine.
 
 **_Usage example:_**
 
@@ -65,7 +65,7 @@ It accepts the following arguments:
 
 It returns a dict with information about the tuning process.
 
-It can raise a `ConfigError` exception (with pertinent error message) if there's no connection to MongoDB.
+It can raise a `ConfigError` exception with message if there's no connection to MongoDB.
 
 **Note:** _You do not need to worry about setting your MongoDB version; it will be set within Paperspace infrastructure for hyperparameter tuning._
 
@@ -91,7 +91,7 @@ Function to check and construct MongoDB connection string.
 
 It returns a connection string to MongoDB.
 
-It can raise a `ConfigError` exception (with pertinent error message) if there's a problem with any values used to prepare the MongoDB connection string.
+It can raise a `ConfigError` exception with message if there's a problem with any values used to prepare the MongoDB connection string.
 
 Usage example:
 
