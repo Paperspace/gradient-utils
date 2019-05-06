@@ -17,7 +17,7 @@ pip install gradient-sdk
 
 # How to use it
 
-## 1. Multinode Helper functions
+## Multinode Helper functions
 
 ### Multinode GRPC Tensorflow
 
