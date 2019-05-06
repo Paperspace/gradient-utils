@@ -1,68 +1,76 @@
 # Gradient ML SDK
 
-This is SDK to work with Paperspace infrastructure.
+This is an SDK for performing Machine Learning with Gradientº, intended to work with Paperspace infrastructure.
 
 **Remember:**
-For now this SDK is not prepared to work on machines outside of Paperspace infrastructure!
+Currently, this SDK does _not_ support machines outside of Paperspace infrastructure!
 
 # Requirements
 
-This SDK works with Python 3.5+ version.
+This SDK requires Python 3.5+.
 
-You can install it with:
+To install it, run:
 
 ```bash
 pip install gradient-sdk
 ```
 
-# How to use it
+# Usage
 
-## Multinode Helper functions
+## Multinode Helper Functions
 
 ### Multinode GRPC Tensorflow
 
-Setting up TF_CONFIG environment variable
-For multi-worker training, as mentioned before, you need to us set "TF_CONFIG" environment variable for each binary running in your cluster. The "TF_CONFIG" environment variable is a JSON string which specifies what tasks constitute a cluster, their addresses and each task's role in the cluster. We provide a Kubernetes template in the tensorflow/ecosystem repo which sets "TF_CONFIG" for your training tasks.
+**Set the TF_CONFIG environment variable**
+For multi-worker training, you need to set the `TF_CONFIG` environment variable for each binary running in your cluster. Set the value of `TF_CONFIG` to a JSON string that specifies each task within the cluster, including each task's address and role within the cluster. We've provided a Kubernetes template in the tensorflow/ecosystem repo which sets `TF_CONFIG` for your training tasks.
 
 **get_tf_config()**
 
-This function will set `TF_CONFIG` when run on machines in Paperspace infrastructure.
-If there would be any problem with configuration of this environment variable in machines then will be raised `ConfigError` with message.
+Function to set value of `TF_CONFIG` when run on machines within Paperspace infrastructure.
 
-Example of usage:
+It can raise a `ConfigError` exception (with pertinent error message) if there's a problem with its configuration in a particular machine.
+
+**_Usage example:_**
+
 ```python
 from gradient_sdk import get_tf_config
 
 get_tf_config()
 ```
 
-## Hyper Tune
+## Hyperparameter Tuning
 
-For now we only support Hyperopt
+Currently, Gradientº only supports _Hyperopt_ for Hyperparameter Tuning.
 
- **hyper_tune**
- 
- Function that run hyper tune. This function accept arguments:
- - `train_model`
- User model to tune
- - `hparam_def`
- User definition (scope) of search space.
- To set this value you can look at hyperopt documentation.
- - `algo` 
- Search algorithm.
- Default set to `tpe.suggest` from hyperopt
- - `max_ecals` 
- Allow up to this many function evaluations before returning. 
- Default set to 25.
- - `func` 
- Function that will run hyper tune.
- Default set to `fmin` from hyperopt. _Do not change it if you do not know what you are doing_
- 
-This function return dict with information about tune process.
-It also can raise `ConfigError` exception where there is no connection to mongo db.
-_You do not need to worry about setting your version of mongo db because it will be set in Paperspace infrastructure for hyper parameter tune._
- 
-Example of usage:
+**hyper_tune()**
+
+Function to run hyperparameter tuning.
+
+It accepts the following arguments:
+
+- `train_model`
+  User model to tune.
+- `hparam_def`
+  User definition (scope) of search space.
+  To set this value, refer to [hyperopt documentation](https://github.com/hyperopt/hyperopt).
+- `algo`
+  Search algorithm.
+  _Default_: `tpe.suggest` (from hyperopt).
+- `max_ecals`
+  Maximum number of function evaluations to allow before returning.
+  _Default_: `25`.
+- `func`
+  Function to be run by hyper tune.
+  _Default_: `fmin` (from hyperopt). _Do not change this value if you do not know what you are doing!_
+
+It returns a dict with information about the tuning process.
+
+It can raise a `ConfigError` exception (with pertinent error message) if there's no connection to MongoDB.
+
+**Note:** _You do not need to worry about setting your MongoDB version; it will be set within Paperspace infrastructure for hyperparameter tuning._
+
+**Usage example:**
+
 ```python
 from gradient_sdk import hyper_tune
 
@@ -74,95 +82,103 @@ argmin1 = hyper_tune(model, scope)
 # pass more arguments
 argmin2 = hyper_tune(model, scope, algo=tpe.suggest, max_evals=100)
 ```
- 
- ## Utility functions
 
-**get_mongo_conn_str**
+## Utility Functions
 
-Function to check and construct mongo db connection string.
+**get_mongo_conn_str()**
 
-If there are some problems with values to prepare connection string to mongo db there is raised `ConfigError` with message.
+Function to check and construct MongoDB connection string.
 
-It will return connection string to mongo db.
+It returns a connection string to MongoDB.
 
-Example of usage:
+It can raise a `ConfigError` exception (with pertinent error message) if there's a problem with any values used to prepare the MongoDB connection string.
+
+Usage example:
+
 ```python
 from gradient_sdk import get_mongo_conn_str
 
 conn_str = get_mongo_conn_str()
 ```
 
-**data_dir**
+**data_dir()**
 
 Function to retrieve path to job space.
 
-Example of usage:
+Usage example:
+
 ```python
 from gradient_sdk import data_dir
 
 job_space = data_dir()
 ```
 
-**model_dir**
+**model_dir()**
 
 Function to retrieve path to model space.
 
-Example of usage:
+Usage example:
+
 ```python
 from gradient_sdk import model_dir
 
 model_path = model_dir(model_name)
 ```
 
-**export_dir**
+**export_dir()**
 
 Function to retrieve path for model export.
 
-Example of usage:
+Usage example:
+
 ```python
 from gradient_sdk import export_dir
 
 model_path = export_dir(model_name)
 ```
 
-**worker_hosts**
+**worker_hosts()**
 
 Function to retrieve information about worker hosts.
 
-Example of usage:
+Usage example:
+
 ```python
 from gradient_sdk import worker_hosts
 
 model_path = worker_hosts()
 ```
 
-**ps_hosts**
+**ps_hosts()**
 
-Function to retrieve information about paperspace hosts.
+Function to retrieve information about Paperspace hosts.
 
-Example of usage:
+Usage example:
+
 ```python
 from gradient_sdk import ps_hosts
 
 model_path = ps_hosts()
 ```
 
-**task_index**
+**task_index()**
 
 Function to retrieve information about task index.
 
-Example of usage:
+Usage example:
+
 ```python
 from gradient_sdk import task_index
 
 model_path = task_index()
 ```
 
-**job_name**
+**job_name()**
 
 Function to retrieve information about job name.
 
-Example of usage:
+Usage example:
+
 ```python
 from gradient_sdk import job_name
 
