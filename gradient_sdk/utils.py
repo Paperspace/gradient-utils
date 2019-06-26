@@ -106,12 +106,20 @@ def data_dir():
     return os.environ.get("PS_JOBSPACE", "/storage")
 
 
-def model_dir(model_name):
-    return os.path.join(os.environ.get("PS_MODEL_PATH", "/storage/models/"), model_name)
+def model_dir(model_name=None):
+    if model_name:
+        model_path = os.path.join(os.environ.get("PS_MODEL_PATH", "/storage/models/"), model_name)
+    else:
+        model_path = os.environ.get("PS_MODEL_PATH", "/storage/models/")
+    return model_path
 
 
-def export_dir(model_name):
-    return os.path.join(os.environ.get("PS_MODEL_PATH", "/storage/models/"), model_name)
+def export_dir(model_name=None):
+    if model_name:
+        export_path = os.path.join(os.environ.get("PS_MODEL_PATH", "/storage/models/"), model_name)
+    else:
+        export_path = os.environ.get("PS_MODEL_PATH", "/storage/models/")
+    return export_path
 
 
 def worker_hosts():
