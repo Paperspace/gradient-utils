@@ -1,9 +1,6 @@
 # Gradient ML SDK
 
-This is an SDK for performing Machine Learning with Gradientº, intended to work with Paperspace infrastructure.
-
-**Remember:**
-Currently, this SDK does _not_ support machines outside of Paperspace infrastructure!
+This is an SDK for performing Machine Learning with Gradientº, it can be installed in addition to [gradient-cli](https://github.com/Paperspace/gradient-cli).
 
 # Requirements
 
