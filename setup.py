@@ -1,10 +1,8 @@
-import io
 import re
 from codecs import open
 from os import path
 
 from setuptools import setup, find_packages
-
 
 with open("gradient_sdk/__init__.py", "r", encoding="utf8") as f:
     version = re.search(r"__version__ = \"(.*?)\"", f.read()).group(1)
@@ -19,7 +17,7 @@ with open("README.md", "r") as fh:
 
 requirements = [
     "wheel",
-    "hyperopt",
+    "hyperopt<0.2",  # hyperopt==0.2 does not work on Py<3.6
     "pymongo",
 ]
 
