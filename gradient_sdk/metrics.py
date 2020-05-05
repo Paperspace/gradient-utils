@@ -1,5 +1,4 @@
 import os
-from typing import Dict
 
 from prometheus_client import push_to_gateway, Gauge, CollectorRegistry
 
@@ -28,7 +27,7 @@ class ExperimentMetricsLogger:
         self.registry = registry
         self.grouping_key = grouping_key
 
-        self._metrics: Dict[str, Gauge] = dict()
+        self._metrics = dict()
 
     def __getitem__(self, item: str) -> Gauge:
         return self._metrics[item]
