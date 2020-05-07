@@ -2,7 +2,7 @@
 Gradient ML SDK
 """
 from gradient_sdk.hyper_parameter import hyper_tune
-from gradient_sdk.metrics import ExperimentMetricsLogger
+from gradient_sdk.metrics import MetricsLogger
 from gradient_sdk.multi_node import get_tf_config
 from gradient_sdk.utils import get_mongo_conn_str, data_dir, worker_hosts, export_dir, job_name, model_dir, ps_hosts, \
     task_index
@@ -21,5 +21,5 @@ __all__ = [
     "ps_hosts",
     "task_index",
     "hyper_tune",
-    "ExperimentMetricsLogger",
+    "MetricsLogger",
 ]
