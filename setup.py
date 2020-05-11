@@ -19,6 +19,7 @@ requirements = [
     "wheel",
     "hyperopt<0.2",  # hyperopt==0.2 does not work on Py<3.6
     "pymongo",
+    "prometheus_client",
 ]
 
 dev_requirements = [
