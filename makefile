@@ -1,6 +1,6 @@
 SRC=$(shell pwd)
 PIP=pip3
-RELEASE_NAME=gradient_sdk
+RELEASE_NAME=gradient_utils
 PWD=$(shell pwd)
 
 export PYTHONPATH:=$(SRC)
