@@ -30,7 +30,7 @@ class MetricsLogger:
     """Prometheus wrapper for logging custom metrics
     
     Examples:
-        >>> from gradient_sdk import MetricsLogger
+        >>> from gradient_utils import MetricsLogger
         >>> m_logger = MetricsLogger()
         >>> m_logger.add_gauge("some_metric_name")
         >>> m_logger["some_metric_1"].set(3)

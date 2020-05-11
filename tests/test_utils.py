@@ -2,8 +2,8 @@ import os
 
 import pytest
 
-from gradient_sdk.exceptions import ConfigError
-from gradient_sdk.utils import get_mongo_conn_str, data_dir, model_dir, export_dir
+from gradient_utils.exceptions import ConfigError
+from gradient_utils.utils import get_mongo_conn_str, data_dir, model_dir, export_dir
 
 
 def test_get_mongo_conn_str_default():

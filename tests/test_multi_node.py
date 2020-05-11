@@ -2,8 +2,8 @@ import os
 
 import pytest
 
-from gradient_sdk import get_tf_config
-from gradient_sdk.exceptions import ConfigError
+from gradient_utils import get_tf_config
+from gradient_utils.exceptions import ConfigError
 
 
 def test_get_tf_config_default():

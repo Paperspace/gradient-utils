@@ -4,7 +4,7 @@ from os import path
 
 from setuptools import setup, find_packages
 
-with open("gradient_sdk/__init__.py", "r", encoding="utf8") as f:
+with open("gradient_utils/__init__.py", "r", encoding="utf8") as f:
     version = re.search(r"__version__ = \"(.*?)\"", f.read()).group(1)
 
 here = path.abspath(path.dirname(__file__))
@@ -27,7 +27,7 @@ dev_requirements = [
 ]
 
 setup(
-    name="gradient_sdk",
+    name="gradient_utils",
     version=version,
     description="Gradient ML SDK",
     long_description=long_description,
