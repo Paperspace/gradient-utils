@@ -1,4 +1,20 @@
-# Gradient ML SDK
+![GitHubSplash](https://user-images.githubusercontent.com/585865/65443342-e630d300-ddfb-11e9-9bcd-de1d2033ea60.png)
+
+Gradient Utils
+=================
+
+![PyPI](https://img.shields.io/pypi/v/gradient)
+[![codecov](https://codecov.io/gh/Paperspace/gradient-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/Paperspace/gradient-utils)
+
+<br>
+
+**Get started:** [Create Account](https://www.paperspace.com/account/signup?gradient=true) • [Install CLI](https://docs.paperspace.com/gradient/get-started/install-the-cli) • [Tutorials](https://docs.paperspace.com/gradient/tutorials) • [Docs](https://docs.paperspace.com/gradient)
+
+**Resources:** [Website](https://gradient.paperspace.com/) • [Blog](https://blog.paperspace.com/) • [Support](https://support.paperspace.com/hc/en-us) • [Contact Sales](https://use.paperspace.com/contact-sales)
+
+<br>
+
+Gradient is an an end-to-end MLOps platform that enables individuals and organizations to quickly develop, train, and deploy Deep Learning models.  The Gradient software stack runs on any infrastructure e.g. AWS, GCP, on-premise and low-cost [Paperspace GPUs](https://gradient.paperspace.com/instances).  Leverage automatic versioning, distributed training, built-in graphs & metrics, hyperparameter search, GradientCI, 1-click Jupyter Notebooks, our Python SDK, and more. 
 
 This is an SDK for performing Machine Learning with Gradientº, it can be installed in addition to [gradient-cli](https://github.com/Paperspace/gradient-cli).
 
@@ -9,7 +25,7 @@ This SDK requires Python 3.5+.
 To install it, run:
 
 ```bash
-pip install gradient-sdk
+pip install gradient-utils
 ```
 
 # Usage
@@ -69,7 +85,7 @@ It can raise a `ConfigError` exception with message if there's no connection to 
 **Usage example:**
 
 ```python
-from gradient_sdk import hyper_tune
+from gradient_utils import hyper_tune
 
 # Prepare model and search scope
 
@@ -93,7 +109,7 @@ It can raise a `ConfigError` exception with message if there's a problem with an
 Usage example:
 
 ```python
-from gradient_sdk import get_mongo_conn_str
+from gradient_utils import get_mongo_conn_str
 
 conn_str = get_mongo_conn_str()
 ```
@@ -105,7 +121,7 @@ Function to retrieve path to job space.
 Usage example:
 
 ```python
-from gradient_sdk import data_dir
+from gradient_utils import data_dir
 
 job_space = data_dir()
 ```
@@ -117,7 +133,7 @@ Function to retrieve path to model space.
 Usage example:
 
 ```python
-from gradient_sdk import model_dir
+from gradient_utils import model_dir
 
 model_path = model_dir(model_name)
 ```
@@ -129,7 +145,7 @@ Function to retrieve path for model export.
 Usage example:
 
 ```python
-from gradient_sdk import export_dir
+from gradient_utils import export_dir
 
 model_path = export_dir(model_name)
 ```
@@ -153,7 +169,7 @@ Function to retrieve information about Paperspace hosts.
 Usage example:
 
 ```python
-from gradient_sdk import ps_hosts
+from gradient_utils import ps_hosts
 
 model_path = ps_hosts()
 ```
@@ -165,7 +181,7 @@ Function to retrieve information about task index.
 Usage example:
 
 ```python
-from gradient_sdk import task_index
+from gradient_utils import task_index
 
 model_path = task_index()
 ```
@@ -177,7 +193,7 @@ Function to retrieve information about job name.
 Usage example:
 
 ```python
-from gradient_sdk import job_name
+from gradient_utils import job_name
 
 model_path = job_name()
 ```
