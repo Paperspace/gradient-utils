@@ -1,8 +1,8 @@
 import json
 import os
 
-from gradient_sdk.exceptions import ConfigError
-from gradient_sdk.utils import _get_paperspace_tf_config
+from gradient_utils.exceptions import ConfigError
+from gradient_utils.utils import _get_paperspace_tf_config
 
 
 def get_tf_config():

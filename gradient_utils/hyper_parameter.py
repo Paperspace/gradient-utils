@@ -6,7 +6,7 @@ from hyperopt import fmin, tpe
 from hyperopt.mongoexp import MongoTrials
 from pymongo.errors import ServerSelectionTimeoutError
 
-from gradient_sdk.utils import get_mongo_conn_str, _experiment_name, _check_mongo_client_connection
+from gradient_utils.utils import get_mongo_conn_str, _experiment_name, _check_mongo_client_connection
 
 logger = logging.getLogger(__name__)
 

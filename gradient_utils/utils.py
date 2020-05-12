@@ -6,7 +6,7 @@ import os
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
 
-from gradient_sdk.exceptions import ConfigError
+from gradient_utils.exceptions import ConfigError
 
 logger = logging.getLogger(__name__)
 

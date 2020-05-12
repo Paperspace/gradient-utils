@@ -4,7 +4,7 @@ from os import path
 
 from setuptools import setup, find_packages
 
-with open("gradient_sdk/__init__.py", "r", encoding="utf8") as f:
+with open("gradient_utils/__init__.py", "r", encoding="utf8") as f:
     version = re.search(r"__version__ = \"(.*?)\"", f.read()).group(1)
 
 here = path.abspath(path.dirname(__file__))
@@ -27,9 +27,9 @@ dev_requirements = [
 ]
 
 setup(
-    name="gradient_sdk",
+    name="gradient_utils",
     version=version,
-    description="Gradient ML SDK",
+    description="Gradient Utils",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Paperspace/gradient-sdk",
@@ -43,8 +43,9 @@ setup(
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
-    keywords="gradient sdk ml",
+    keywords="gradient utils sdk",
     packages=find_packages(exclude=["contrib", "docs", "tests"]),
     install_requires=requirements,
     extras_require={
