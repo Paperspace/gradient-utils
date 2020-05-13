@@ -32,7 +32,7 @@ setup(
     description="Gradient Utils",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/Paperspace/gradient-sdk",
+    url="https://github.com/Paperspace/gradient-utils",
     author="Paperspace Co.",
     author_email="info@paperspace.com",
     classifiers=[

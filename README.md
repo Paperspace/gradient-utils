@@ -46,7 +46,7 @@ It can raise a `ConfigError` exception with message if there's a problem with it
 **_Usage example:_**
 
 ```python
-from gradient_sdk import get_tf_config
+from gradient_utils import get_tf_config
 
 get_tf_config()
 ```
@@ -157,7 +157,7 @@ Function to retrieve information about worker hosts.
 Usage example:
 
 ```python
-from gradient_sdk import worker_hosts
+from gradient_utils import worker_hosts
 
 model_path = worker_hosts()
 ```
@@ -196,4 +196,22 @@ Usage example:
 from gradient_utils import job_name
 
 model_path = job_name()
+```
+
+# MetricsLogger
+Prometheus wrapper for logging custom metrics
+
+Usage example:
+
+```python
+from gradient_utils import MetricsLogger
+m_logger = MetricsLogger()
+m_logger.add_gauge("some_metric_1")
+m_logger["some_metric_1"].set(3)
+m_logger["some_metric_1"].inc()
+
+m_logger.add_gauge("some_metric_2")
+m_logger["some_metric_2"].set_to_current_time()
+
+m_logger.push_metrics()
 ```
