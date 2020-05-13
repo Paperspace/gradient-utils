@@ -32,10 +32,11 @@ class MetricsLogger:
     Examples:
         >>> from gradient_utils import MetricsLogger
         >>> m_logger = MetricsLogger()
-        >>> m_logger.add_gauge("some_metric_name")
+        >>> m_logger.add_gauge("some_metric_1")
+        >>> m_logger.add_gauge("some_metric_2")
         >>> m_logger["some_metric_1"].set(3)
-        >>> m_logger["some_metric_2"].inc()
-        >>> m_logger["some_metric_3"].set_to_current_time()
+        >>> m_logger["some_metric_1"].inc()
+        >>> m_logger["some_metric_2"].set_to_current_time()
         >>> m_logger.push_metrics()
 
     """
