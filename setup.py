@@ -9,11 +9,9 @@ with open("gradient_utils/__init__.py", "r", encoding="utf8") as f:
 
 here = path.abspath(path.dirname(__file__))
 
-
 # Get the long description from the README file
 with open("README.md", "r") as fh:
     long_description = fh.read()
-
 
 requirements = [
     "wheel",
@@ -23,7 +21,8 @@ requirements = [
 ]
 
 dev_requirements = [
-    "tox"
+    "tox",
+    "mock",
 ]
 
 setup(

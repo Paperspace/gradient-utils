@@ -43,7 +43,9 @@ def test_data_dir():
 
 
 def test_model_dir_default():
-    os.environ.unsetenv("PS_MODEL_PATH")
+    if "PS_MODEL_PATH" in os.environ:
+        del os.environ["PS_MODEL_PATH"]
+
     model_path = model_dir("test")
 
     assert "/storage/models/test" == model_path
