@@ -1,5 +1,4 @@
 import os
-from typing import Union
 
 from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info
 
@@ -41,7 +40,13 @@ class MetricsLogger:
 
     """
 
-    def __init__(self, job_id=None, registry=CollectorRegistry(), grouping_key: dict = None, push_gateway=None):
+    def __init__(self, job_id=None, registry=CollectorRegistry(), grouping_key=None, push_gateway=None):
+        """
+        :param str job_id:
+        :param CollectorRegistry registry:
+        :param dict grouping_key:
+        :param str push_gateway:
+        """
         self.id = job_id or get_job_id()
         self.registry = registry
         self.grouping_key = grouping_key
@@ -49,22 +54,27 @@ class MetricsLogger:
 
         self._metrics = dict()
 
-    def __getitem__(self, item: str) -> Union[Gauge, Counter, Summary, Histogram, Info]:
+    def __getitem__(self, item):
+        """
+        :param str item:
+
+        :rtype Gauge|Counter|Summary|Histogram|Info
+        """
         return self._metrics[item]
 
-    def add_gauge(self, name: str):
+    def add_gauge(self, name):
         self._add_metric(Gauge, name)
 
-    def add_counter(self, name: str):
+    def add_counter(self, name):
         self._add_metric(Counter, name)
 
-    def add_summary(self, name: str):
+    def add_summary(self, name):
         self._add_metric(Summary, name)
 
-    def add_histogram(self, name: str):
+    def add_histogram(self, name):
         self._add_metric(Histogram, name)
 
-    def add_info(self, name: str):
+    def add_info(self, name):
         self._add_metric(Info, name)
 
     def _add_metric(self, cls, name, documentation=""):

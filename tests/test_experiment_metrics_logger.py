@@ -1,4 +1,4 @@
-from unittest import mock
+import mock
 
 from gradient_utils import MetricsLogger
 from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry
