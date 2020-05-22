@@ -15,6 +15,7 @@ with open("README.md", "r") as fh:
 
 requirements = [
     "wheel",
+    "numpy<1.19",    # 1.18 is last stable version that works on Py3.5
     "hyperopt<0.2",  # hyperopt==0.2 does not work on Py<3.6
     "pymongo",
     "prometheus_client",

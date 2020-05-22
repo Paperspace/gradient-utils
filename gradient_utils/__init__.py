@@ -7,7 +7,7 @@ from gradient_utils.multi_node import get_tf_config
 from gradient_utils.utils import get_mongo_conn_str, data_dir, worker_hosts, export_dir, job_name, model_dir, ps_hosts, \
     task_index
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 __all__ = [
     "__version__",
