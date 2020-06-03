@@ -24,12 +24,12 @@ def _get_env_var_or_raise(*env_vars):
 def _get_experiment_id():
     if os.getenv('PAPERSPACE_EXPERIMENT_ID'):
         return os.getenv('PAPERSPACE_EXPERIMENT_ID')
-    hostname = os.getenv('HOSTNAME')
+    hostname = os.getenv('HOSTNAME', "")
     try:
         experiment_id = hostname.split('-')[1]
         return experiment_id
     except IndexError:
-        msg = "{} experiment ID not found"
+        msg = "Experiment ID not found"
         raise ValueError(msg)
 
 
