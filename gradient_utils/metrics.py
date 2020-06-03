@@ -4,7 +4,7 @@ from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter
 
 
 def get_metric_pushgateway():
-    return os.getenv('PAPERSPACE_METRIC_PUSHGATEWAY', 'http://localhost:9091')
+    return os.getenv('PAPERSPACE_METRIC_PUSHGATEWAY', 'http://prom-aggregation-gateway:80')
 
 
 def _get_env_var_or_raise(*env_vars):
@@ -21,8 +21,20 @@ def _get_env_var_or_raise(*env_vars):
     return rv
 
 
+def _get_experiment_id():
+    if os.getenv('PAPERSPACE_EXPERIMENT_ID'):
+        return os.getenv('PAPERSPACE_EXPERIMENT_ID')
+    hostname = os.getenv('HOSTNAME', "")
+    try:
+        experiment_id = hostname.split('-')[1]
+        return experiment_id
+    except IndexError:
+        msg = "Experiment ID not found"
+        raise ValueError(msg)
+
+
 def get_job_id():
-    return _get_env_var_or_raise("PAPERSPACE_EXPERIMENT_ID", "PAPERSPACE_DEPLOYMENT_ID")
+    return _get_experiment_id()
 
 
 class MetricsLogger:
