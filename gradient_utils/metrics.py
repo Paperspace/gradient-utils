@@ -21,20 +21,26 @@ def _get_env_var_or_raise(*env_vars):
     return rv
 
 
-def _get_experiment_id():
+def _get_object_id():
     if os.getenv('PAPERSPACE_EXPERIMENT_ID'):
         return os.getenv('PAPERSPACE_EXPERIMENT_ID')
     hostname = os.getenv('HOSTNAME', "")
     try:
-        experiment_id = hostname.split('-')[1]
-        return experiment_id
+        object_id = hostname.split('-')
+
+        if len(object_id) == 1:  #for Noteboooks
+            return object_id
+        elif len(object_id) == 3:  # for Deployments
+            return object_id[0]
+        else: # For Experiments
+            return object_id[1]
     except IndexError:
         msg = "Experiment ID not found"
         raise ValueError(msg)
 
 
 def get_job_id():
-    return _get_experiment_id()
+    return _get_object_id()
 
 
 class MetricsLogger:
