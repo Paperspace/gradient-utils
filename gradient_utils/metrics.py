@@ -29,10 +29,10 @@ def _get_object_id():
         object_id = hostname.split('-')
 
         if len(object_id) == 1:  #for Noteboooks
-            return object_id
+            return object_id[0]
         elif len(object_id) == 3:  # for Deployments
             return object_id[0]
-        else: # For Experiments
+        else:  # For Experiments
             return object_id[1]
     except IndexError:
         msg = "Experiment ID not found"
