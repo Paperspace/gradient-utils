@@ -46,11 +46,24 @@ workflows:
   version: 2.1
   pipeline:
     jobs:
-      - test
+      - test:
+          filters:
+            tags:
+              only: /^v.*/
       - hold:
           type: approval
           requires:
             - test
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - publish:
           requires:
             - hold
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
