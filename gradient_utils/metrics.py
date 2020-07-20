@@ -1,6 +1,8 @@
 import os
 
-from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info
+from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info, REGISTRY
+
+HOSTNAME = os.getenv("HOSTNAME")
 
 
 def get_metric_pushgateway():
@@ -21,31 +23,24 @@ def _get_env_var_or_raise(*env_vars):
     return rv
 
 
-def _get_object_id():
+def _get_experiment_id():
     if os.getenv('PAPERSPACE_EXPERIMENT_ID'):
         return os.getenv('PAPERSPACE_EXPERIMENT_ID')
-    hostname = os.getenv('HOSTNAME', "")
     try:
-        object_id = hostname.split('-')
-
-        if len(object_id) == 1:  #for Noteboooks
-            return object_id[0]
-        elif len(object_id) == 3:  # for Deployments
-            return object_id[0]
-        else:  # For Experiments
-            return object_id[1]
+        experiment_id = HOSTNAME.split('-')[1]
+        return experiment_id
     except IndexError:
         msg = "Experiment ID not found"
         raise ValueError(msg)
 
 
 def get_job_id():
-    return _get_object_id()
+    return _get_experiment_id()
 
 
 class MetricsLogger:
     """Prometheus wrapper for logging custom metrics
-    
+
     Examples:
         >>> from gradient_utils import MetricsLogger
         >>> m_logger = MetricsLogger()
@@ -58,16 +53,15 @@ class MetricsLogger:
 
     """
 
-    def __init__(self, job_id=None, registry=CollectorRegistry(), grouping_key=None, push_gateway=None):
+    def __init__(self, job_id=None, registry=REGISTRY, push_gateway=None):
         """
         :param str job_id:
         :param CollectorRegistry registry:
-        :param dict grouping_key:
         :param str push_gateway:
         """
         self.id = job_id or get_job_id()
         self.registry = registry
-        self.grouping_key = grouping_key
+        self.grouping_key = {"label_metrics_experiment_handle": self.id}
         self.push_gateway = push_gateway or get_metric_pushgateway()
 
         self._metrics = dict()
@@ -78,7 +72,7 @@ class MetricsLogger:
 
         :rtype Gauge|Counter|Summary|Histogram|Info
         """
-        return self._metrics[item]
+        return self._metrics[item].labels(self.id, HOSTNAME)
 
     def add_gauge(self, name):
         self._add_metric(Gauge, name)
@@ -96,7 +90,8 @@ class MetricsLogger:
         self._add_metric(Info, name)
 
     def _add_metric(self, cls, name, documentation=""):
-        new_metric = cls(name, documentation=documentation, registry=self.registry)
+        new_metric = cls(name, documentation=documentation, registry=self.registry,
+                         labelnames=["label_metrics_experiment_handle", "pod"])
         self._metrics[name] = new_metric
 
     def push_metrics(self, timeout=30):
