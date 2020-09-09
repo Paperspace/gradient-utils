@@ -2,11 +2,25 @@ import os
 
 from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info, REGISTRY
 
+PUSH_GATEWAY_ENV = 'PAPERSPACE_METRIC_PUSHGATEWAY'
+PUSH_GATEWAY_DEFAULT = 'http://prom-aggregation-gateway:80'
+WORKLOAD_TYPE_ENV = 'PAPERSPACE_METRIC_WORKLOAD_TYPE'
+WORKLOAD_TYPE_DEFAULT = 'experiment'
+WORKLOAD_ID_ENV = 'PAPERSPACE_METRIC_WORKLOAD_ID'
+LEGACY_EXPERIMENT_ID_ENV = 'PAPERSPACE_EXPERIMENT_ID'
 HOSTNAME = os.getenv("HOSTNAME")
 
 
 def get_metric_pushgateway():
-    return os.getenv('PAPERSPACE_METRIC_PUSHGATEWAY', 'http://prom-aggregation-gateway:80')
+    return os.getenv(PUSH_GATEWAY_ENV, PUSH_GATEWAY_DEFAULT)
+
+
+def get_workload_type():
+    return os.getenv(WORKLOAD_TYPE_ENV, WORKLOAD_TYPE_DEFAULT)
+
+
+def get_workload_label():
+    return 'label_metrics_{}_handle'.format(get_workload_type())
 
 
 def _get_env_var_or_raise(*env_vars):
@@ -24,8 +38,8 @@ def _get_env_var_or_raise(*env_vars):
 
 
 def _get_experiment_id():
-    if os.getenv('PAPERSPACE_EXPERIMENT_ID'):
-        return os.getenv('PAPERSPACE_EXPERIMENT_ID')
+    if os.getenv(LEGACY_EXPERIMENT_ID_ENV):
+        return os.getenv(LEGACY_EXPERIMENT_ID_ENV)
     try:
         experiment_id = HOSTNAME.split('-')[1]
         return experiment_id
@@ -34,7 +48,9 @@ def _get_experiment_id():
         raise ValueError(msg)
 
 
-def get_job_id():
+def get_workload_id():
+    if os.getenv(WORKLOAD_ID_ENV):
+        return os.getenv(WORKLOAD_ID_ENV)
     return _get_experiment_id()
 
 
@@ -50,18 +66,17 @@ class MetricsLogger:
         >>> m_logger["some_metric_1"].inc()
         >>> m_logger["some_metric_2"].set_to_current_time()
         >>> m_logger.push_metrics()
-
     """
 
-    def __init__(self, job_id=None, registry=REGISTRY, push_gateway=None):
+    def __init__(self, workload_id=None, registry=REGISTRY, push_gateway=None):
         """
-        :param str job_id:
+        :param str workload_id:
         :param CollectorRegistry registry:
         :param str push_gateway:
         """
-        self.id = job_id or get_job_id()
+        self.id = workload_id or get_workload_id()
         self.registry = registry
-        self.grouping_key = {"label_metrics_experiment_handle": self.id}
+        self.grouping_key = {get_workload_label(): self.id}
         self.push_gateway = push_gateway or get_metric_pushgateway()
 
         self._metrics = dict()
@@ -91,7 +106,7 @@ class MetricsLogger:
 
     def _add_metric(self, cls, name, documentation=""):
         new_metric = cls(name, documentation=documentation, registry=self.registry,
-                         labelnames=["label_metrics_experiment_handle", "pod"])
+                         labelnames=[get_workload_label(), "pod"])
         self._metrics[name] = new_metric
 
     def push_metrics(self, timeout=30):

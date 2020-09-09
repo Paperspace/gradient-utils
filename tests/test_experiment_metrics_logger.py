@@ -5,9 +5,9 @@ from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry
 
 
 @mock.patch("gradient_utils.metrics.get_metric_pushgateway", return_value="some_gateway")
-@mock.patch("gradient_utils.metrics.get_job_id", return_value="some_id")
+@mock.patch("gradient_utils.metrics.get_workload_id", return_value="some_id")
 def test_should_create_metrics_logger_instance_with_required_parameters(
-        get_job_id_patched, get_metric_pushgateway_patched):
+        get_workload_id_patched, get_metric_pushgateway_patched):
     metrics_logger = MetricsLogger()
 
     assert metrics_logger.id == "some_id"
@@ -17,9 +17,9 @@ def test_should_create_metrics_logger_instance_with_required_parameters(
 
 
 @mock.patch("gradient_utils.metrics.get_metric_pushgateway")
-@mock.patch("gradient_utils.metrics.get_job_id")
+@mock.patch("gradient_utils.metrics.get_workload_id")
 def test_should_create_metrics_logger_instance_with_all_parameters(
-        get_job_id_patched, get_metric_pushgateway_patched):
+        get_workload_id_patched, get_metric_pushgateway_patched):
     registry = CollectorRegistry()
     push_gateway = "some.url"
 
@@ -32,7 +32,7 @@ def test_should_create_metrics_logger_instance_with_all_parameters(
     assert metrics_logger.id == "some_id"
     assert metrics_logger.push_gateway == push_gateway
     assert metrics_logger.registry is registry
-    get_job_id_patched.assert_not_called()
+    get_workload_id_patched.assert_not_called()
     get_metric_pushgateway_patched.assert_not_called()
 
 
