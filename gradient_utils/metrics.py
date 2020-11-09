@@ -1,4 +1,5 @@
 import os
+from numbers import Number
 
 from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info, REGISTRY
 
@@ -53,6 +54,49 @@ def get_workload_id():
         return os.getenv(WORKLOAD_ID_ENV)
     return _get_experiment_id()
 
+def add_metrics(metrics, workload_id=None, registry=REGISTRY, push_gateway=None, timeout=30):
+    metrics_logger = MetricsLogger(
+        workload_id=workload_id, registry=registry, push_gateway=push_gateway
+    )
+
+    metrics = [Metric(key, value) for key, value in metrics.items()]
+    for metric in metrics:
+        metrics_logger.add_gauge(metric.key)
+        metrics_logger[metric.key].set(metric.value)
+
+    metrics_logger.push_metrics(timeout)
+
+class Metric:
+    def __init__(self, key, value):
+        # TODO: Is there a way get the setters to do the initialization checks?
+        if not isinstance(key, str):
+            raise ValueError('Key of a metric can only be a string')
+        if not isinstance(value, Number):
+            raise ValueError('Value of a metric can only be a number')
+        self.key = key
+        self.value = value
+
+
+    @property
+    def key(self):
+        return self._key
+
+    @key.setter
+    def key(self, k):
+        if not isinstance(k, str):
+            raise ValueError('Key of a metric can only be a number')
+        self._key = k
+
+    @property
+    def value(self):
+        return self._value
+
+
+    @value.setter
+    def value(self, v):
+        if not isinstance(ValueError, float):
+            raise ValueError('Value of a metric can only be a float')
+        self._value = v
 
 class MetricsLogger:
     """Prometheus wrapper for logging custom metrics
