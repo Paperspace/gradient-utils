@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  utils:
+    build: .
+    command: poetry run pytest tests/
+    depends_on:
+      - pushgateway
+    volumes:
+      - .:/app/
+    environment:
+      PUSHGATEWAY_URL: http://pushgateway:9091
+  pushgateway:
+    image: prom/pushgateway:v1.3.0
+    command: --web.enable-admin-api
+    ports:
+      - "9091:9091"
+      

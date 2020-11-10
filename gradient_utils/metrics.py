@@ -94,8 +94,8 @@ class Metric:
 
     @value.setter
     def value(self, v):
-        if not isinstance(ValueError, float):
-            raise ValueError('Value of a metric can only be a float')
+        if not isinstance(v, Number):
+            raise ValueError('Value of a metric can only be a number')
         self._value = v
 
 class MetricsLogger:
