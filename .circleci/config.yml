@@ -17,37 +17,37 @@ commands:
 jobs:
   build-python27:
     docker:
-      - image: circleci/python:2.7
+      - image: cimg/base:stable
     steps:
       - test:
           version: "2.7"
   build-python35:
     docker:
-      - image: circleci/python:3.5
+      - image: cimg/base:stable
     steps:
       - test:
           version: "3.5"
   build-python36:
     docker:
-      - image: circleci/python:3.6
+      - image: cimg/base:stable
     steps:
       - test:
           version: "3.6"
   build-python37:
     docker:
-      - image: circleci/python:3.7
+      - image: cimg/base:stable
     steps:
       - test:
           version: "3.7"
   build-python38:
     docker:
-      - image: circleci/python:3.8
+      - image: cimg/base:stable
     steps:
       - test:
           version: "3.8"
   build-python39:
     docker:
-      - image: circleci/python:3.9
+      - image: cimg/base:stable
     steps:
       - test:
           version: "3.9"
