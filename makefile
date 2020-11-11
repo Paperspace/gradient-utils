@@ -41,4 +41,4 @@ dc-setup:
 	docker-compose -f docker-compose.ci.yml build utils
 
 dc-test:
-	docker-compose -f docker-compose.ci.yml run -t utils poetry run pytest
+	docker-compose -f docker-compose.ci.yml run utils poetry run pytest
