@@ -227,6 +227,14 @@ add_metrics({
 # Contributing
 
 ## Setup
-We use Docker and Docker-compose to run the package locally.
+We use Docker and Docker-compose to run the tests locally.
 
+```
+# To setup the integration test framework
+docker-compose up --remove-orphans -d pushgateway
+docker-compose build utils
+
+# To run tests
+docker-compose -f docker-compose.ci.yml run utils poetry run pytest
+```
 
