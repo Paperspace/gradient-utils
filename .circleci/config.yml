@@ -26,41 +26,41 @@ jobs:
       - checkout
       - run: make dc-setup
       - run: make dc-test
-  test:
-    executor: python-tox
-    steps:
-      - checkout
-      - run:
-          name: Run tests
-          command: make run-tests
-      - run:
-          name: Get latest version from tags
-          command: echo export sdk_version="$(git describe --tags --abbrev=0 | sed -r 's/.*(([0-9]+\.){2}([0-9]+))/\1/')" >> $BASH_ENV
-      - run:
-          name: Install package requirements
-          command: make pip-install-dev
-      - run:
-          name: Set correct version for build
-          command: sed -i "s/0.0.1/$sdk_version/" gradient_utils/__init__.py
-      - run:
-          name: Build Gradient SDK package
-          command: make build
-  publish:
-    executor: python-tox
-    steps:
-      - checkout
-      - run:
-          name: Install requirements to publish package
-          command: make pip-install-dev
-      - run:
-          name: Get latest version from tags
-          command: echo export sdk_version="$(git describe --tags --abbrev=0 | sed -r 's/.*(([0-9]+\.){2}([0-9]+))/\1/')" >> $BASH_ENV
-      - run:
-          name: Set correct version for build
-          command: sed -i "s/0.0.1/$sdk_version/" gradient_utils/__init__.py
-      - run:
-          name: Publish package
-          command: make publish
+  # test:
+  #   executor: python-tox
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Run tests
+  #         command: make run-tests
+  #     - run:
+  #         name: Get latest version from tags
+  #         command: echo export sdk_version="$(git describe --tags --abbrev=0 | sed -r 's/.*(([0-9]+\.){2}([0-9]+))/\1/')" >> $BASH_ENV
+  #     - run:
+  #         name: Install package requirements
+  #         command: make pip-install-dev
+  #     - run:
+  #         name: Set correct version for build
+  #         command: sed -i "s/0.0.1/$sdk_version/" gradient_utils/__init__.py
+  #     - run:
+  #         name: Build Gradient SDK package
+  #         command: make build
+  # publish:
+  #   executor: python-tox
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Install requirements to publish package
+  #         command: make pip-install-dev
+  #     - run:
+  #         name: Get latest version from tags
+  #         command: echo export sdk_version="$(git describe --tags --abbrev=0 | sed -r 's/.*(([0-9]+\.){2}([0-9]+))/\1/')" >> $BASH_ENV
+  #     - run:
+  #         name: Set correct version for build
+  #         command: sed -i "s/0.0.1/$sdk_version/" gradient_utils/__init__.py
+  #     - run:
+  #         name: Publish package
+  #         command: make publish
 
 workflows:
   version: 2.1
