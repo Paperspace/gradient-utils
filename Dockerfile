@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python:3.6
 
 RUN pip install poetry==1.1.4
 

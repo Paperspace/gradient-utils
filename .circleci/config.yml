@@ -15,12 +15,6 @@ commands:
       - run: make dc-test
 
 jobs:
-  build-python27:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - test:
-          version: "2.7"
   build-python35:
     docker:
       - image: cimg/base:stable
