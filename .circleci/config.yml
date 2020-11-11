@@ -27,7 +27,6 @@ jobs:
   build-python38:
     docker:
       - image: python:3.8
-    working_directory: ~/gradient_utils
     steps:
       - run: make dc-setup
       - run: make dc-test
