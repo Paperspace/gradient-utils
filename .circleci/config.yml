@@ -2,10 +2,15 @@ version: 2.1
 
 commands:
   test:
+    parameters:
+      version:
+        default: "3.9"
+        type: string
     steps:
       - checkout
       - setup_remote_docker:
           version: 19.03.13
+      - run: sed -i 's/_version_/<<parameters.version>>/' Dockerfile.ci && mv Dockerfile.ci Dockerfile
       - run: make dc-setup
       - run: make dc-test
 
@@ -14,32 +19,38 @@ jobs:
     docker:
       - image: circleci/python:2.7
     steps:
-      - test
+      - test:
+          version: "3.5"
   build-python35:
     docker:
       - image: circleci/python:3.5
     steps:
-      - test
+      - test:
+          version: "3.5"
   build-python36:
     docker:
       - image: circleci/python:3.6
     steps:
-      - test
+      - test:
+          version: "3.6"
   build-python37:
     docker:
       - image: circleci/python:3.7
     steps:
-      - test
+      - test:
+          version: "3.7"
   build-python38:
     docker:
       - image: circleci/python:3.8
     steps:
-      - test
+      - test:
+          version: "3.8"
   build-python39:
     docker:
       - image: circleci/python:3.9
     steps:
-      - test
+      - test:
+        version: "3.9"
   # test:
   #   executor: python-tox
   #   steps:

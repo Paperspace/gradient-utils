@@ -198,7 +198,7 @@ from gradient_utils import job_name
 model_path = job_name()
 ```
 
-# MetricsLogger
+## Metrics
 Prometheus wrapper for logging custom metrics
 
 Usage example:
@@ -223,3 +223,10 @@ add_metrics({
 })
 
 ```
+
+# Contributing
+
+## Setup
+We use Docker and Docker-compose to run the package locally.
+
+
