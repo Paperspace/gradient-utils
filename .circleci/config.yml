@@ -35,6 +35,9 @@ jobs:
     executor: python-tox
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 19.03
+          docker_layer_caching: true
       - run:
           name: Run tests
           command: make run-tests
