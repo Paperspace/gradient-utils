@@ -1,10 +1,5 @@
 version: 2.1
 
-executors:
-  python-tox:
-    docker:
-      - image: themattrix/tox-base:latest
-
 jobs:
   # build-python27:
   #   docker:
