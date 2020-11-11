@@ -20,7 +20,7 @@ jobs:
       - image: circleci/python:2.7
     steps:
       - test:
-          version: "3.5"
+          version: "2.7"
   build-python35:
     docker:
       - image: circleci/python:3.5
@@ -50,7 +50,7 @@ jobs:
       - image: circleci/python:3.9
     steps:
       - test:
-        version: "3.9"
+          version: "3.9"
   # test:
   #   executor: python-tox
   #   steps:
