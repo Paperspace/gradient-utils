@@ -72,24 +72,24 @@ workflows:
       # - build-python37
       - "build-python38"
       # - build-python39
-      - test:
-          filters:
-            tags:
-              only: /^v.*/
-      - hold:
-          type: approval
-          requires:
-            - test
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
-      - publish:
-          requires:
-            - hold
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
+      # - test:
+      #     filters:
+      #       tags:
+      #         only: /^v.*/
+      # - hold:
+      #     type: approval
+      #     requires:
+      #       - test
+      #     filters:
+      #       tags:
+      #         only: /^v.*/
+      #       branches:
+      #         ignore: /.*/
+      # - publish:
+      #     requires:
+      #       - hold
+      #     filters:
+      #       tags:
+      #         only: /^v.*/
+      #       branches:
+      #         ignore: /.*/
