@@ -6,6 +6,35 @@ executors:
       - image: themattrix/tox-base:latest
 
 jobs:
+  # build-python27:
+  #   docker:
+  #     - image: python:2.7.13
+  #   working_directory: ~/your_project
+  #   steps:
+  #     - run: echo "hello python 2.7.13"
+  # build-python35:
+  #   docker:
+  #     - image: python:3.5.3
+  #   working_directory: ~/your_project
+  #   steps:
+  #     - run: echo "hello python 3.5.3"
+  # build-python36:
+  #   docker:
+  #     - image: python:3.6.0
+  #   working_directory: ~/your_project
+  #   steps:
+  #     - run: echo "hello python 3.6.0"
+  build-python38:
+    docker:
+      - image: python:3.8
+    working_directory: ~/your_project
+    steps:
+      - run:
+          name: Setup pushgateway and docker images
+          command: make dc-setup
+    - run:
+        name: Run tests
+        command: make dc-test
   test:
     executor: python-tox
     steps:
@@ -46,6 +75,12 @@ workflows:
   version: 2.1
   pipeline:
     jobs:
+      # - build-python27
+      # - build-python35
+      # - build-python36
+      # - build-python37
+      - build-python38
+      # - build-python39
       - test:
           filters:
             tags:

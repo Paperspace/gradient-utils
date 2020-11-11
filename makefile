@@ -35,3 +35,10 @@ local-publish: pip-install-publish build
 
 publish: pip-install-publish build
 	twine upload dist/*
+
+dc-setup:
+	docker-compose up --remove-orphans -d pushgateway
+	docker-compose build utils
+
+dc-test:
+	docker-compose run utils poetry run pytest
