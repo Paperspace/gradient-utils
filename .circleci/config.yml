@@ -85,8 +85,6 @@ workflows:
   version: 2.1
   pipeline:
     jobs:
-      - build-python27
-      - build-python35
       - build-python36
       - build-python37
       - build-python38
