@@ -37,8 +37,8 @@ publish: pip-install-publish build
 	twine upload dist/*
 
 dc-setup:
-	docker-compose up --remove-orphans -d pushgateway
-	docker-compose build utils
+	docker-compose -f docker-compose.ci.yml up --remove-orphans -d pushgateway
+	docker-compose -f docker-compose.ci.yml build utils
 
 dc-test:
-	docker-compose run utils poetry run pytest
+	docker-compose -f docker-compose.ci.yml run -t utils poetry run pytest
