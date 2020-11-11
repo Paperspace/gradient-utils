@@ -3,8 +3,8 @@
 Gradient Utils
 =================
 
-![PyPI](https://img.shields.io/pypi/v/gradient)
-[![codecov](https://codecov.io/gh/Paperspace/gradient-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/Paperspace/gradient-utils)
+![PyPI](https://img.shields.io/pypi/v/gradient-utils)
+[![codecov](https://codecov.io/gh/Paperspace/gradient-utils/branch/master/graph/badge.svg)](https://codecov.io/gh/Paperspace/gradient-utils)
 
 <br>
 
