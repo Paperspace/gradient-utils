@@ -9,6 +9,7 @@ LOCAL_PUSH_GATEWAY = os.getenv('PUSHGATEWAY_URL')
 
 def test_add_metrics_pushes_metrics():
     # Before tests, clear the push gateway
+    # TODO: Run this before each
     requests.put(f'{LOCAL_PUSH_GATEWAY}/api/v1/admin/wipe')
 
     registry = CollectorRegistry()
@@ -21,7 +22,6 @@ def test_add_metrics_pushes_metrics():
 
     # Get metrics
     r = requests.get(f'{LOCAL_PUSH_GATEWAY}/api/v1/metrics')
-    print(r.json())
     gateway_metrics = r.json()['data'][0]
     for key in metrics:
         # Each metric is returned in a dictionary so we need to get the singular key
