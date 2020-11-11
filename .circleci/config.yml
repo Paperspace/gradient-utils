@@ -26,7 +26,7 @@ jobs:
   #     - run: echo "hello python 3.6.0"
   build-python38:
     docker:
-      - image: python:3.8
+      - image: circleci/python:3.8
     steps:
       - checkout
       - run: make dc-setup
@@ -35,9 +35,6 @@ jobs:
     executor: python-tox
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 19.03
-          docker_layer_caching: true
       - run:
           name: Run tests
           command: make run-tests
