@@ -26,7 +26,7 @@ jobs:
   #     - run: echo "hello python 3.6.0"
   build-python38:
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:3.8.6
     steps:
       - checkout
       - run: make dc-setup
