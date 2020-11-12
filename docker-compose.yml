@@ -12,7 +12,7 @@ services:
       # The hostname is used to generate the experiment ID.
       # Docker will give an incompatable hostname. Possibly revisit this later.
       HOSTNAME: 'test-server.lan'
-      PUSHGATEWAY_URL: http://pushgateway:9091
+      PAPERSPACE_METRIC_PUSHGATEWAY: http://pushgateway:9091
   pushgateway:
     image: prom/pushgateway:v1.3.0
     command: --web.enable-admin-api

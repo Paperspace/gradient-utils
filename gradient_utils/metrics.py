@@ -58,9 +58,8 @@ def get_workload_id():
 
 def add_metrics(
         metrics,
-        push_gateway=None,
         timeout=30):
-    metrics_logger = MetricsLogger(push_gateway=push_gateway)
+    metrics_logger = MetricsLogger()
 
     metrics = [Metric(key, value) for key, value in metrics.items()]
     for metric in metrics:

@@ -5,7 +5,7 @@ import os
 
 from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry, add_metrics
 
-LOCAL_PUSH_GATEWAY = os.getenv('PUSHGATEWAY_URL')
+LOCAL_PUSH_GATEWAY = os.getenv('PAPERSPACE_METRIC_PUSHGATEWAY')
 
 
 def test_add_metrics_pushes_metrics():
@@ -19,7 +19,7 @@ def test_add_metrics_pushes_metrics():
         'dog': 2,
         'catdog': 1.2
     }
-    add_metrics(metrics, push_gateway=LOCAL_PUSH_GATEWAY)
+    add_metrics(metrics)
 
     # Get metrics
     r = requests.get(f'{LOCAL_PUSH_GATEWAY}/api/v1/metrics')
