@@ -3,7 +3,22 @@ name = "gradient-utils"
 version = "0.3.0"
 description = "This is an SDK for performing Machine Learning with Gradient."
 authors = ["Paperspace Co. <info@paperspace.com>"]
-license = "MIT License"
+license = "MIT"
+readme = "README.md"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9"
+]
+keywords = ["gradient", "utils", "sdk", "ml"]
+repository = "https://github.com/Paperspace/gradient-utils"
+homepage = "https://github.com/Paperspace/gradient-utils"
 
 [tool.poetry.dependencies]
 python = "^3.6"
