@@ -19,8 +19,7 @@ def test_add_metrics_pushes_metrics():
         'dog': 2,
         'catdog': 1.2
     }
-    add_metrics(metrics, workload_id='some_id', registry=registry,
-                push_gateway=LOCAL_PUSH_GATEWAY)
+    add_metrics(metrics, push_gateway=LOCAL_PUSH_GATEWAY)
 
     # Get metrics
     r = requests.get(f'{LOCAL_PUSH_GATEWAY}/api/v1/metrics')

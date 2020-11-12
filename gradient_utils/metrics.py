@@ -9,7 +9,7 @@ WORKLOAD_TYPE_ENV = 'PAPERSPACE_METRIC_WORKLOAD_TYPE'
 WORKLOAD_TYPE_DEFAULT = 'experiment'
 WORKLOAD_ID_ENV = 'PAPERSPACE_METRIC_WORKLOAD_ID'
 LEGACY_EXPERIMENT_ID_ENV = 'PAPERSPACE_EXPERIMENT_ID'
-HOSTNAME = os.getenv("HOSTNAME")
+HOSTNAME = os.getenv("HOSTNAME") or 'test-server.lan'
 
 
 def get_metric_pushgateway():
@@ -58,13 +58,9 @@ def get_workload_id():
 
 def add_metrics(
         metrics,
-        workload_id=None,
-        registry=REGISTRY,
         push_gateway=None,
         timeout=30):
-    metrics_logger = MetricsLogger(
-        workload_id=workload_id, registry=registry, push_gateway=push_gateway
-    )
+    metrics_logger = MetricsLogger(push_gateway=push_gateway)
 
     metrics = [Metric(key, value) for key, value in metrics.items()]
     for metric in metrics:
@@ -76,11 +72,11 @@ def add_metrics(
 
 class Metric:
     def __init__(self, key, value):
-        # TODO: Is there a way get the setters to do the initialization checks?
-        if not isinstance(key, str):
-            raise ValueError('Key of a metric can only be a string')
-        if not isinstance(value, Number):
-            raise ValueError('Value of a metric can only be a number')
+        # # TODO: Is there a way get the setters to do the initialization checks?
+        # if not isinstance(key, str):
+        #     raise ValueError('Key of a metric can only be a string')
+        # if not isinstance(value, Number):
+        #     raise ValueError('Value of a metric can only be a number')
         self.key = key
         self.value = value
 
@@ -91,7 +87,7 @@ class Metric:
     @key.setter
     def key(self, k):
         if not isinstance(k, str):
-            raise ValueError('Key of a metric can only be a number')
+            raise ValueError('Key of a metric can only be a string')
         self._key = k
 
     @property
