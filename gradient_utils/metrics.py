@@ -71,11 +71,6 @@ def add_metrics(
 
 class Metric:
     def __init__(self, key, value):
-        # # TODO: Is there a way get the setters to do the initialization checks?
-        # if not isinstance(key, str):
-        #     raise ValueError('Key of a metric can only be a string')
-        # if not isinstance(value, Number):
-        #     raise ValueError('Value of a metric can only be a number')
         self.key = key
         self.value = value
 
