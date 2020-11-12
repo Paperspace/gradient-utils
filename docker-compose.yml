@@ -9,6 +9,8 @@ services:
     volumes:
       - .:/app/
     environment:
+      # The hostname is used to generate the experiment ID.
+      # Docker will give an incompatable hostname. Possibly revisit this later.
       HOSTNAME: 'test-server.lan'
       PUSHGATEWAY_URL: http://pushgateway:9091
   pushgateway:
