@@ -3,6 +3,7 @@ import pytest
 
 from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry, add_metrics
 
+
 @mock.patch("gradient_utils.metrics.push_to_gateway")
 @mock.patch("gradient_utils.metrics.Gauge")
 def test_add_metrics_pushes_metrics(gauge_patched, push_to_gateway_patched):
@@ -25,7 +26,12 @@ def test_add_metrics_pushes_metrics(gauge_patched, push_to_gateway_patched):
     )
 
     calls = [mock.call(1), mock.call(2), mock.call(1.2)]
-    gauge_patched().labels("some_id", None).set.assert_has_calls(calls, any_order=True)
+    gauge_patched().labels(
+        "some_id",
+        None).set.assert_has_calls(
+        calls,
+        any_order=True)
+
 
 def test_add_metrics_errors_with_nonstring_key():
     registry = CollectorRegistry()
@@ -37,6 +43,7 @@ def test_add_metrics_errors_with_nonstring_key():
         add_metrics(metrics, workload_id='some_id', registry=registry)
 
     assert "Key of a metric can only be a string" in str(ce.value)
+
 
 def test_add_metrics_errors_with_nonnumber_value():
     registry = CollectorRegistry()

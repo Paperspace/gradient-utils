@@ -67,7 +67,8 @@ def _check_mongo_client_connection():
     try:
         resp = client.db_name.command('ping')
     except ServerSelectionTimeoutError:
-        logger.warning("Check mongo db connection - connection to mongo db timeout")
+        logger.warning(
+            "Check mongo db connection - connection to mongo db timeout")
         return mongo_status
 
     if resp.get("ok"):
@@ -89,13 +90,15 @@ def get_mongo_conn_str():
     experiment_name = _experiment_name()
 
     if mongo_host and mongo_port and experiment_name:
-        return "mongo://%s:%s/%s/jobs" % (mongo_host, mongo_port, experiment_name)
+        return "mongo://%s:%s/%s/jobs" % (mongo_host,
+                                          mongo_port, experiment_name)
     else:
         error_message = "Something went wrong. " \
                         "Check os variables that are needed for constricting mongo connection string: " \
                         "- MONGO_DB_HOST: %s  " \
                         "- MONGO_DB_PORT: %s " \
-                        "- EXPERIMENT_NAME: %s" % (mongo_host, mongo_port, experiment_name)
+                        "- EXPERIMENT_NAME: %s" % (mongo_host,
+                                                   mongo_port, experiment_name)
         raise ConfigError(
             component="Mongo connection",
             message=error_message
@@ -108,7 +111,8 @@ def data_dir():
 
 def model_dir(model_name=None):
     if model_name:
-        model_path = os.path.join(os.environ.get("PS_MODEL_PATH", "/storage/models/"), model_name)
+        model_path = os.path.join(os.environ.get(
+            "PS_MODEL_PATH", "/storage/models/"), model_name)
     else:
         model_path = os.environ.get("PS_MODEL_PATH", "/storage/models/")
     return model_path
@@ -116,7 +120,8 @@ def model_dir(model_name=None):
 
 def export_dir(model_name=None):
     if model_name:
-        export_path = os.path.join(os.environ.get("PS_MODEL_PATH", "/storage/models/"), model_name)
+        export_path = os.path.join(os.environ.get(
+            "PS_MODEL_PATH", "/storage/models/"), model_name)
     else:
         export_path = os.environ.get("PS_MODEL_PATH", "/storage/models/")
     return export_path
