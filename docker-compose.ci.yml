@@ -11,7 +11,7 @@ services:
     # https://circleci.com/docs/2.0/building-docker-images/#mounting-folders
     environment:
       HOSTNAME: 'test-server.lan'
-      PUSHGATEWAY_URL: http://pushgateway:9091
+      PAPERSPACE_METRIC_PUSHGATEWAY: http://pushgateway:9091
   pushgateway:
     image: prom/pushgateway:v1.3.0
     command: --web.enable-admin-api
