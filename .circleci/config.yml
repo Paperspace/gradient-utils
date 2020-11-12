@@ -15,31 +15,31 @@ commands:
       - run: make dc-test
 
 jobs:
-  build-python35:
+  test-python35:
     docker:
       - image: cimg/base:stable
     steps:
       - test:
           version: "3.5"
-  build-python36:
+  test-python36:
     docker:
       - image: cimg/base:stable
     steps:
       - test:
           version: "3.6"
-  build-python37:
+  test-python37:
     docker:
       - image: cimg/base:stable
     steps:
       - test:
           version: "3.7"
-  build-python38:
+  test-python38:
     docker:
       - image: cimg/base:stable
     steps:
       - test:
           version: "3.8"
-  build-python39:
+  test-python39:
     docker:
       - image: cimg/base:stable
     steps:
@@ -49,12 +49,9 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
-      - test:
-          version: "3.9"
-    steps:
       - checkout
       - setup_remote_docker:
-        version: 19.03.13
+          version: 19.03.13
       - run: sed -i 's/_version_/3.9/' Dockerfile.ci && mv Dockerfile.ci Dockerfile
       - run:
           name: Build Gradient SDK package and publish to PyPI
@@ -64,14 +61,17 @@ workflows:
   version: 2.1
   pipeline:
     jobs:
-      - build-python36
-      - build-python37
-      - build-python38
-      - build-python39
+      - test-python36
+      - test-python37
+      - test-python38
+      - test-python39
       - hold:
           type: approval
           requires:
-            - test
+            - test-python36
+            - test-python37
+            - test-python38
+            - test-python39
           filters:
             tags:
               only: /^v.*/
