@@ -9,6 +9,7 @@ services:
     volumes:
       - .:/app/
     environment:
+      HOSTNAME: 'test-server.lan'
       PUSHGATEWAY_URL: http://pushgateway:9091
   pushgateway:
     image: prom/pushgateway:v1.3.0
