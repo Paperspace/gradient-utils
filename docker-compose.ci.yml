@@ -12,7 +12,7 @@ services:
     environment:
       PUSHGATEWAY_URL: http://pushgateway:9091
   pushgateway:
-    image: weaveworks/prom-aggregation-gateway
+    image: prom/pushgateway:v1.3.0
     command: --web.enable-admin-api
     ports:
       - "9091:9091"
