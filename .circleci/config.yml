@@ -61,6 +61,7 @@ workflows:
   version: 2.1
   pipeline:
     jobs:
+      - test-python35
       - test-python36
       - test-python37
       - test-python38
@@ -68,6 +69,7 @@ workflows:
       - hold:
           type: approval
           requires:
+            - test-python35
             - test-python36
             - test-python37
             - test-python38
