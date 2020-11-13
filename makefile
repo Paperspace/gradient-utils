@@ -5,14 +5,33 @@ PWD=$(shell pwd)
 
 export PYTHONPATH:=$(SRC)
 
-clean-build-publish:
-	rm -rf dist
-	docker-compose -f docker-compose.ci.yml build utils
-	docker-compose run -e POETRY_PYPI_TOKEN_PYPI utils poetry build && poetry publish
+pip-update:
+	$(PIP) install --upgrade pip
+	$(PIP) install --upgrade setuptools
 
-dc-setup:
-	docker-compose -f docker-compose.ci.yml up --remove-orphans -d pushgateway
-	docker-compose -f docker-compose.ci.yml build utils
+pip-install: pip-update
+	$(PIP) install --upgrade .
 
-dc-test:
-	docker-compose -f docker-compose.ci.yml run utils poetry run pytest
+pip-install-dev: pip-update
+	$(PIP) install --upgrade -e .[dev]
+
+pip-install-publish: pip-update
+	$(PIP) install twine
+
+run-tests:
+	tox
+
+clean-build:
+	rm -rf build dist
+
+build: clean-build
+	python setup.py sdist bdist_wheel
+
+local-publish-test: pip-install-publish build
+	twine upload -r test dist/*
+
+local-publish: pip-install-publish build
+	twine upload -r pypi dist/*
+
+publish: pip-install-publish build
+	twine upload dist/*

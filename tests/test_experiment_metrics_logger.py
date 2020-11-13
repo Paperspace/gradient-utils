@@ -4,16 +4,14 @@ from gradient_utils import MetricsLogger
 from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry
 
 
-@mock.patch("gradient_utils.metrics.get_metric_pushgateway",
-            return_value="some_gateway")
+@mock.patch("gradient_utils.metrics.get_metric_pushgateway", return_value="some_gateway")
 @mock.patch("gradient_utils.metrics.get_workload_id", return_value="some_id")
 def test_should_create_metrics_logger_instance_with_required_parameters(
         get_workload_id_patched, get_metric_pushgateway_patched):
     metrics_logger = MetricsLogger()
 
     assert metrics_logger.id == "some_id"
-    assert metrics_logger.grouping_key == {
-        'label_metrics_experiment_handle': 'some_id'}
+    assert metrics_logger.grouping_key == {'label_metrics_experiment_handle': 'some_id'}
     assert metrics_logger.push_gateway == "some_gateway"
     assert isinstance(metrics_logger.registry, CollectorRegistry)
 

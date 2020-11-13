@@ -30,7 +30,8 @@ def _hyper_tune_check():
             current_retry_timeout = (i + 1) * retry_timeout
             logger.warning(
                 "Hyper Tune Check - connection is not available retry next connection check in %s seconds",
-                current_retry_timeout)
+                current_retry_timeout
+            )
             sleep(current_retry_timeout)
         else:
             is_check_complete = True
@@ -39,12 +40,7 @@ def _hyper_tune_check():
     return is_check_complete
 
 
-def hyper_tune(
-        train_model,
-        hparam_def,
-        algo=tpe.suggest,
-        max_evals=25,
-        func=fmin):
+def hyper_tune(train_model, hparam_def, algo=tpe.suggest, max_evals=25, func=fmin):
     """
     Function to prepare and run hyper parameter tune.
 
@@ -63,13 +59,7 @@ def hyper_tune(
         try:
             trials = MongoTrials(mongo_connect_str, exp_key=_experiment_name())
         except ServerSelectionTimeoutError:
-            logger.warning(
-                "Hyper Tune - MongoTrials server selection Timeout Error")
+            logger.warning("Hyper Tune - MongoTrials server selection Timeout Error")
             is_connection_available = _hyper_tune_check()
         else:
-            return func(
-                train_model,
-                space=hparam_def,
-                trials=trials,
-                algo=algo,
-                max_evals=max_evals)
+            return func(train_model, space=hparam_def, trials=trials, algo=algo, max_evals=max_evals)

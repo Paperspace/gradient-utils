@@ -3,8 +3,8 @@
 Gradient Utils
 =================
 
-![PyPI](https://img.shields.io/pypi/v/gradient-utils)
-[![codecov](https://codecov.io/gh/Paperspace/gradient-utils/branch/master/graph/badge.svg)](https://codecov.io/gh/Paperspace/gradient-utils)
+![PyPI](https://img.shields.io/pypi/v/gradient)
+[![codecov](https://codecov.io/gh/Paperspace/gradient-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/Paperspace/gradient-utils)
 
 <br>
 
@@ -198,14 +198,13 @@ from gradient_utils import job_name
 model_path = job_name()
 ```
 
-## Metrics
+# MetricsLogger
 Prometheus wrapper for logging custom metrics
 
 Usage example:
 
 ```python
 from gradient_utils import MetricsLogger
-from gradient_utils.metrics import add_metrics
 m_logger = MetricsLogger()
 m_logger.add_gauge("some_metric_1")
 m_logger["some_metric_1"].set(3)
@@ -215,26 +214,4 @@ m_logger.add_gauge("some_metric_2")
 m_logger["some_metric_2"].set_to_current_time()
 
 m_logger.push_metrics()
-
-# Insert metrics with a single command
-add_metrics({
-  'loss': 0.25,
-  'accuracy': 0.99
-})
-
 ```
-
-# Contributing
-
-## Setup
-We use Docker and Docker-compose to run the tests locally.
-
-```
-# To setup the integration test framework
-docker-compose up --remove-orphans -d pushgateway
-docker-compose build utils
-
-# To run tests
-docker-compose -f docker-compose.ci.yml run utils poetry run pytest
-```
-
