@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "gradient-utils"
+version = "0.3.0"
+description = "This is an SDK for performing Machine Learning with Gradient."
+authors = ["Paperspace Co. <info@paperspace.com>"]
+license = "MIT"
+readme = "README.md"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9"
+]
+keywords = ["gradient", "utils", "sdk", "ml"]
+repository = "https://github.com/Paperspace/gradient-utils"
+homepage = "https://github.com/Paperspace/gradient-utils"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+wheel = "^0.35.1"
+hyperopt = "^0.2.5"
+pymongo = "^3.11.0"
+prometheus-client = "^0.8.0"
+numpy = "^1.19.4"
+
+[tool.poetry.dev-dependencies]
+tox = "^3.20.1"
+mock = "^4.0.2"
+pytest = "^6.1.2"
+requests = "^2.24.0"
+autopep8 = "^1.5.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

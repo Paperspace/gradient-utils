@@ -1,4 +1,5 @@
 import os
+from numbers import Number
 
 from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info, REGISTRY
 
@@ -31,7 +32,8 @@ def _get_env_var_or_raise(*env_vars):
             break
 
     if rv is None:
-        msg = "{} environment variable(s) not found".format(", ".join(env_vars))
+        msg = "{} environment variable(s) not found".format(
+            ", ".join(env_vars))
         raise ValueError(msg)
 
     return rv
@@ -52,6 +54,45 @@ def get_workload_id():
     if os.getenv(WORKLOAD_ID_ENV):
         return os.getenv(WORKLOAD_ID_ENV)
     return _get_experiment_id()
+
+
+def add_metrics(
+        metrics,
+        timeout=30):
+    metrics_logger = MetricsLogger()
+
+    metrics = [Metric(key, value) for key, value in metrics.items()]
+    for metric in metrics:
+        metrics_logger.add_gauge(metric.key)
+        metrics_logger[metric.key].set(metric.value)
+
+    metrics_logger.push_metrics(timeout)
+
+
+class Metric:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+    @property
+    def key(self):
+        return self._key
+
+    @key.setter
+    def key(self, k):
+        if not isinstance(k, str):
+            raise ValueError('Key of a metric can only be a string')
+        self._key = k
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, v):
+        if not isinstance(v, Number):
+            raise ValueError('Value of a metric can only be a number')
+        self._value = v
 
 
 class MetricsLogger:
@@ -105,8 +146,13 @@ class MetricsLogger:
         self._add_metric(Info, name)
 
     def _add_metric(self, cls, name, documentation=""):
-        new_metric = cls(name, documentation=documentation, registry=self.registry,
-                         labelnames=[get_workload_label(), "pod"])
+        new_metric = cls(
+            name,
+            documentation=documentation,
+            registry=self.registry,
+            labelnames=[
+                get_workload_label(),
+                "pod"])
         self._metrics[name] = new_metric
 
     def push_metrics(self, timeout=30):
