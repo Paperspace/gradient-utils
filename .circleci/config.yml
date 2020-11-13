@@ -15,12 +15,6 @@ commands:
       - run: make dc-test
 
 jobs:
-  test-python35:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - test:
-          version: "3.5"
   test-python36:
     docker:
       - image: cimg/base:stable
@@ -61,15 +55,25 @@ workflows:
   version: 2.1
   pipeline:
     jobs:
-      - test-python35
-      - test-python36
-      - test-python37
-      - test-python38
-      - test-python39
+      - test-python36:
+        filters:
+          branches:
+            only: /^.*/
+      - test-python37:
+        filters:
+          branches:
+            only: /^.*/
+      - test-python38:
+          filters:
+            branches:
+              only: /^.*/
+      - test-python39:
+          filters:
+            branches:
+              only: /^.*/
       - hold:
           type: approval
           requires:
-            - test-python35
             - test-python36
             - test-python37
             - test-python38
