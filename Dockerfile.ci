@@ -6,6 +6,7 @@ WORKDIR /app
 
 COPY pyproject.toml /app
 COPY poetry.lock /app
+COPY README.md /app
 
 RUN poetry install
 
