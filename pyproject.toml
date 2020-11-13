@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gradient-utils"
-version = "0.3.1"
+version = "0.3.0"
 description = "This is an SDK for performing Machine Learning with Gradient."
 authors = ["Paperspace Co. <info@paperspace.com>"]
 license = "MIT"
