@@ -4,4 +4,5 @@ class ConfigError(Exception):
         self.message = message
 
     def __str__(self):
-        return "For component - %s - received error message: %s" % (self.component, self.message)
+        return "For component - %s - received error message: %s" % (
+            self.component, self.message)
