@@ -57,18 +57,26 @@ workflows:
     jobs:
       - test-python36:
         filters:
+          tags:
+            only: /^v.*/
           branches:
             only: /^.*/
       - test-python37:
         filters:
+          tags:
+            only: /^v.*/
           branches:
             only: /^.*/
       - test-python38:
           filters:
+            tags:
+              only: /^v.*/
             branches:
               only: /^.*/
       - test-python39:
           filters:
+            tags:
+              only: /^v.*/
             branches:
               only: /^.*/
       - hold:
