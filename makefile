@@ -8,7 +8,7 @@ export PYTHONPATH:=$(SRC)
 clean-build-publish:
 	rm -rf dist
 	docker-compose -f docker-compose.ci.yml build utils
-	docker-compose run -e POETRY_PYPI_TOKEN_PYPI utils poetry build && poetry publish
+	docker-compose -f docker-compose.ci.yml run -e POETRY_PYPI_TOKEN_PYPI utils poetry build && poetry publish
 
 dc-setup:
 	docker-compose -f docker-compose.ci.yml up --remove-orphans -d pushgateway
