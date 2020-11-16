@@ -39,6 +39,7 @@ def test_metric_creates_object():
     metric = Metric('key', 100)
     assert 'key' == metric.key
     assert 100 == metric.value
+    assert None == metric.step
 
 
 def test_metric_invalid_key():
@@ -65,3 +66,30 @@ def test_metric_invalid_reassign_value():
     with pytest.raises(ValueError) as e:
         metric.value = 'value'
     assert "Value of a metric can only be a number" in str(e.value)
+
+
+def test_metric_valid_step():
+    metric = Metric('key', 100, step=1)
+    assert 1 == metric.step
+    metric.step = 0
+    assert 0 == metric.step
+
+
+def test_metric_invalid_step():
+    with pytest.raises(ValueError) as e:
+        metric = Metric('key', 100, step='One')
+    assert "Step can only be an integer >= 0" in str(e.value)
+
+    with pytest.raises(ValueError) as e:
+        metric = Metric('key', 100, step=-1)
+    assert "Step can only be an integer >= 0" in str(e.value)
+
+    with pytest.raises(ValueError) as e:
+        metric = Metric('key', 100, step=2.3)
+    assert "Step can only be an integer >= 0" in str(e.value)
+
+def test_metric_invalid_changing_step():
+    metric = Metric('key', 100, step=1)
+    with pytest.raises(ValueError) as e:
+        metric.step = 'One'
+    assert "Step can only be an integer >= 0" in str(e.value)

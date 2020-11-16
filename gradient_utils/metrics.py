@@ -58,10 +58,11 @@ def get_workload_id():
 
 def add_metrics(
         metrics,
+        step=None,
         timeout=30):
     metrics_logger = MetricsLogger()
 
-    metrics = [Metric(key, value) for key, value in metrics.items()]
+    metrics = [Metric(key, value, step) for key, value in metrics.items()]
     for metric in metrics:
         metrics_logger.add_gauge(metric.key)
         metrics_logger[metric.key].set(metric.value)
@@ -70,9 +71,10 @@ def add_metrics(
 
 
 class Metric:
-    def __init__(self, key, value):
+    def __init__(self, key, value, step=None):
         self.key = key
         self.value = value
+        self.step = step
 
     @property
     def key(self):
@@ -93,6 +95,16 @@ class Metric:
         if not isinstance(v, Number):
             raise ValueError('Value of a metric can only be a number')
         self._value = v
+
+    @property
+    def step(self):
+        return self._step
+
+    @step.setter
+    def step(self, v):
+        if v != None and (not isinstance(v, int) or v < 0):
+            raise ValueError('Step can only be an integer >= 0')
+        self._step = v
 
 
 class MetricsLogger:
