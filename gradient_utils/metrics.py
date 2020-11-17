@@ -1,7 +1,7 @@
 import os
 from numbers import Number
 
-from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info, REGISTRY
+from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info
 
 PUSH_GATEWAY_ENV = 'PAPERSPACE_METRIC_PUSHGATEWAY'
 PUSH_GATEWAY_DEFAULT = 'http://prom-aggregation-gateway:80'
@@ -62,7 +62,7 @@ def add_metrics(
         timeout=30):
     metrics_logger = MetricsLogger()
 
-    metrics = [Metric(key, value, step) for key, value in metrics.items()]
+    metrics = [Metric(key, value, step=step) for key, value in metrics.items()]
     for metric in metrics:
         metrics_logger.add_gauge(metric.key)
         metrics_logger[metric.key].set(metric.value)
@@ -121,15 +121,18 @@ class MetricsLogger:
         >>> m_logger.push_metrics()
     """
 
-    def __init__(self, workload_id=None, registry=REGISTRY, push_gateway=None):
+    def __init__(self, workload_id=None, registry=None, push_gateway=None, step=None):
         """
         :param str workload_id:
         :param CollectorRegistry registry:
         :param str push_gateway:
         """
         self.id = workload_id or get_workload_id()
-        self.registry = registry
-        self.grouping_key = {get_workload_label(): self.id}
+        self.registry = registry or CollectorRegistry(auto_describe=True)
+        self.grouping_key = {
+            get_workload_label(): self.id,
+            'step': step
+        }
         self.push_gateway = push_gateway or get_metric_pushgateway()
 
         self._metrics = dict()
@@ -140,32 +143,34 @@ class MetricsLogger:
 
         :rtype Gauge|Counter|Summary|Histogram|Info
         """
-        return self._metrics[item].labels(self.id, HOSTNAME)
+        return self._metrics[item]
 
-    def add_gauge(self, name):
-        self._add_metric(Gauge, name)
+    def add_gauge(self, name, step=None):
+        self._add_metric(Gauge, name, step=step)
 
-    def add_counter(self, name):
-        self._add_metric(Counter, name)
+    def add_counter(self, name, step=None):
+        self._add_metric(Counter, name, step=step)
 
-    def add_summary(self, name):
-        self._add_metric(Summary, name)
+    def add_summary(self, name, step=None):
+        self._add_metric(Summary, name, step=step)
 
-    def add_histogram(self, name):
-        self._add_metric(Histogram, name)
+    def add_histogram(self, name, step=None):
+        self._add_metric(Histogram, name, step=step)
 
-    def add_info(self, name):
-        self._add_metric(Info, name)
+    def add_info(self, name, step=None):
+        self._add_metric(Info, name, step=step)
 
-    def _add_metric(self, cls, name, documentation=""):
+    def _add_metric(self, cls, name, documentation="", step=""):
         new_metric = cls(
             name,
             documentation=documentation,
             registry=self.registry,
             labelnames=[
                 get_workload_label(),
-                "pod"])
-        self._metrics[name] = new_metric
+                "pod",
+                "step"])
+        self._metrics[name] = new_metric.labels(self.id, HOSTNAME, step)
+        self.grouping_key['step'] = step
 
     def push_metrics(self, timeout=30):
         push_to_gateway(

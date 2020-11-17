@@ -13,7 +13,8 @@ def test_should_create_metrics_logger_instance_with_required_parameters(
 
     assert metrics_logger.id == "some_id"
     assert metrics_logger.grouping_key == {
-        'label_metrics_experiment_handle': 'some_id'}
+        'label_metrics_experiment_handle': 'some_id',
+        'step': None}
     assert metrics_logger.push_gateway == "some_gateway"
     assert isinstance(metrics_logger.registry, CollectorRegistry)
 
@@ -38,15 +39,13 @@ def test_should_create_metrics_logger_instance_with_all_parameters(
     get_metric_pushgateway_patched.assert_not_called()
 
 
-@mock.patch("gradient_utils.metrics.Gauge")
-def test_should_add_gauge_to_logger_instance(gauge_patched):
+def test_should_add_gauge_to_logger_instance():
     metrics_logger = MetricsLogger("some_id")
     metric_name = "some_gauge"
 
     metrics_logger.add_gauge(metric_name)
 
     assert metric_name in metrics_logger._metrics
-    assert metrics_logger._metrics[metric_name] == gauge_patched.return_value
 
 
 @mock.patch("gradient_utils.metrics.Gauge")
@@ -60,15 +59,13 @@ def test_should_update_gauge_value(gauge_patched):
     gauge_patched().labels("some_id", None).set.assert_called_once_with(2)
 
 
-@mock.patch("gradient_utils.metrics.Counter")
-def test_should_add_counter_to_logger_instance(counter_patched):
+def test_should_add_counter_to_logger_instance():
     metrics_logger = MetricsLogger("some_id")
     metric_name = "some_counter"
 
     metrics_logger.add_counter(metric_name)
 
     assert metric_name in metrics_logger._metrics
-    assert metrics_logger._metrics[metric_name] == counter_patched.return_value
 
 
 @mock.patch("gradient_utils.metrics.Counter")
@@ -82,15 +79,13 @@ def test_should_update_counter_value(counter_patched):
     counter_patched().labels("some_id", None).inc.assert_called_once_with(2)
 
 
-@mock.patch("gradient_utils.metrics.Summary")
-def test_should_add_summary_to_logger_instance(summary_patched):
+def test_should_add_summary_to_logger_instance():
     metrics_logger = MetricsLogger("some_id")
     metric_name = "some_summary"
 
     metrics_logger.add_summary(metric_name)
 
     assert metric_name in metrics_logger._metrics
-    assert metrics_logger._metrics[metric_name] == summary_patched.return_value
 
 
 @mock.patch("gradient_utils.metrics.Summary")
@@ -104,15 +99,13 @@ def test_should_update_summary_value(summary_patched):
     summary_patched().labels("some_id", None).observe.assert_called_once_with(2)
 
 
-@mock.patch("gradient_utils.metrics.Histogram")
-def test_should_add_histogram_to_logger_instance(histogram_patched):
+def test_should_add_histogram_to_logger_instance():
     metrics_logger = MetricsLogger("some_id")
     metric_name = "some_histogram"
 
     metrics_logger.add_histogram(metric_name)
 
     assert metric_name in metrics_logger._metrics
-    assert metrics_logger._metrics[metric_name] == histogram_patched.return_value
 
 
 @mock.patch("gradient_utils.metrics.Histogram")
@@ -126,15 +119,13 @@ def test_should_update_histogram_value(histogram_patched):
     histogram_patched().labels("some_id", None).observe.assert_called_once_with(2)
 
 
-@mock.patch("gradient_utils.metrics.Info")
-def test_should_add_info_to_logger_instance(info_patched):
+def test_should_add_info_to_logger_instance():
     metrics_logger = MetricsLogger("some_id")
     metric_name = "some_info"
 
     metrics_logger.add_info(metric_name)
 
     assert metric_name in metrics_logger._metrics
-    assert metrics_logger._metrics[metric_name] == info_patched.return_value
 
 
 @mock.patch("gradient_utils.metrics.Info")
@@ -162,6 +153,6 @@ def test_should_use_push_to_gateway_to_log_metrics(push_to_gateway_patched):
         gateway=get_metric_pushgateway(),
         job="some_id",
         registry=registry,
-        grouping_key={'label_metrics_experiment_handle': 'some_id'},
+        grouping_key={'label_metrics_experiment_handle': 'some_id', 'step': None},
         timeout=30,
     )
