@@ -60,9 +60,9 @@ def add_metrics(
         metrics,
         step=None,
         timeout=30):
-    metrics_logger = MetricsLogger()
+    metrics_logger = MetricsLogger(step=step)
 
-    metrics = [Metric(key, value, step=step) for key, value in metrics.items()]
+    metrics = [Metric(key, value) for key, value in metrics.items()]
     for metric in metrics:
         metrics_logger.add_gauge(metric.key)
         metrics_logger[metric.key].set(metric.value)
@@ -136,6 +136,7 @@ class MetricsLogger:
         self.push_gateway = push_gateway or get_metric_pushgateway()
 
         self._metrics = dict()
+        self._step = step
 
     def __getitem__(self, item):
         """
@@ -145,22 +146,22 @@ class MetricsLogger:
         """
         return self._metrics[item]
 
-    def add_gauge(self, name, step=None):
-        self._add_metric(Gauge, name, step=step)
+    def add_gauge(self, name):
+        self._add_metric(Gauge, name)
 
-    def add_counter(self, name, step=None):
-        self._add_metric(Counter, name, step=step)
+    def add_counter(self, name):
+        self._add_metric(Counter, name)
 
-    def add_summary(self, name, step=None):
-        self._add_metric(Summary, name, step=step)
+    def add_summary(self, name):
+        self._add_metric(Summary, name)
 
-    def add_histogram(self, name, step=None):
-        self._add_metric(Histogram, name, step=step)
+    def add_histogram(self, name):
+        self._add_metric(Histogram, name)
 
-    def add_info(self, name, step=None):
-        self._add_metric(Info, name, step=step)
+    def add_info(self, name):
+        self._add_metric(Info, name)
 
-    def _add_metric(self, cls, name, documentation="", step=""):
+    def _add_metric(self, cls, name, documentation=""):
         new_metric = cls(
             name,
             documentation=documentation,
@@ -169,8 +170,7 @@ class MetricsLogger:
                 get_workload_label(),
                 "pod",
                 "step"])
-        self._metrics[name] = new_metric.labels(self.id, HOSTNAME, step)
-        self.grouping_key['step'] = step
+        self._metrics[name] = new_metric.labels(self.id, HOSTNAME, self._step)
 
     def push_metrics(self, timeout=30):
         push_to_gateway(

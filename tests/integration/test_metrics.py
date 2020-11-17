@@ -59,16 +59,15 @@ def test_add_metrics_pushes_metrics():
         assert metrics[key] == float(
             gateway_metrics[key]['metrics'][0]['value'])
         assert 'GAUGE' == gateway_metrics[key]['type']
+        assert 'None' == gateway_metrics[key]['metrics'][0]['labels']['step']
 
     # Clean up
     delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
 
 def test_add_metrics_push_with_step():
-    metrics_logger_config = MetricsLogger()
+    metrics_logger_config = MetricsLogger(step=0)
     delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
 
-    print(requests.get(f'{LOCAL_PUSH_GATEWAY}/api/v1/metrics').json())
-    registry = CollectorRegistry()
     metrics = {
         'cat': 1,
         'dog': 2,
@@ -85,8 +84,54 @@ def test_add_metrics_push_with_step():
         assert metrics[key] == float(
             gateway_metrics[key]['metrics'][0]['value'])
         assert 'GAUGE' == gateway_metrics[key]['type']
-        assert 'None' == gateway_metrics[key]['metrics'][0]['labels']['step']
+        assert '0' == gateway_metrics[key]['metrics'][0]['labels']['step']
 
     # Clean up
     delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+
+def test_add_metrics_multiple_steps():
+    metrics_logger_config = MetricsLogger(step=0)
+    metrics_logger_config_1 = MetricsLogger(step=1)
+    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+    delete_from_gateway(metrics_logger_config_1.push_gateway, metrics_logger_config_1.id, grouping_key=metrics_logger_config_1.grouping_key)
+
+    metrics = {
+        'cat': 1,
+        'dog': 2,
+        'catdog': 1.2
+    }
+    add_metrics(metrics, step=0)
+    add_metrics(metrics, step=1)
+
+    # Get metrics
+    r = requests.get(f'{LOCAL_PUSH_GATEWAY}/api/v1/metrics')
+    gateway_metrics = r.json()['data']
+    gateway_metrics_dict = {
+        '0': {},
+        '1': {}
+    }
+    for inserted_metrics in gateway_metrics:
+        for key in metrics:
+            step = inserted_metrics[key]['metrics'][0]['labels']['step']
+            gateway_metrics_dict[step][key] = {}
+            gateway_metrics_dict[step][key]['step'] = inserted_metrics[key]['metrics'][0]['labels']['step']
+            gateway_metrics_dict[step][key]['value'] = inserted_metrics[key]['metrics'][0]['value']
+            gateway_metrics_dict[step][key]['type'] = inserted_metrics[key]['type']
+
+    # Step 0
+    for key in metrics:
+        assert metrics[key] == float(
+            gateway_metrics_dict['0'][key]['value'])
+        assert 'GAUGE' == gateway_metrics_dict['0'][key]['type']
+
+    # Step 1
+    for key in metrics:
+        assert metrics[key] == float(
+            gateway_metrics_dict['1'][key]['value'])
+        assert 'GAUGE' == gateway_metrics_dict['1'][key]['type']
+
+
+    # Clean up
+    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+    delete_from_gateway(metrics_logger_config_1.push_gateway, metrics_logger_config_1.id, grouping_key=metrics_logger_config_1.grouping_key)
 
