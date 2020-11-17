@@ -1,7 +1,17 @@
-import mock
 import pytest
 
-from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry, Metric, add_metrics
+from gradient_utils.metrics.metrics import add_metrics, Metric
+from gradient_utils.metrics import init, patched
+
+
+def test_empty_init():
+    init()
+    assert(len(patched["tensorboard"]) == 0)
+
+
+def test_init_sync_tensorboard():
+    init(sync_tensorboard=True)
+    assert(len(patched["tensorboard"]) > 0)
 
 
 def test_add_metrics_errors_with_nonstring_key():

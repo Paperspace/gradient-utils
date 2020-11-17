@@ -204,26 +204,30 @@ Prometheus wrapper for logging custom metrics
 Usage example:
 
 ```python
-from gradient_utils import MetricsLogger
-# Comment: add_metrics is not supported at the moment. Stay tuned!
-# from gradient_utils.metrics import add_metrics
-m_logger = MetricsLogger()
-m_logger.add_gauge("some_metric_1")
-m_logger["some_metric_1"].set(3)
-m_logger["some_metric_1"].inc()
+from gradient_utils.metrics import init, add_metrics, MetricsLogger
 
-m_logger.add_gauge("some_metric_2")
-m_logger["some_metric_2"].set_to_current_time()
+# Initialize metrics logging
+init()
 
-m_logger.push_metrics()
+# Capture metrics produced by tensorboard
+init(sync_tensorboard=True)
 
-# Insert metrics with a single command
+# Log metrics with a single command
 add_metrics({"loss": 0.25, "accuracy": 0.99})
 
 # Insert metrics with a step value
 # Note: add_metrics should be called once for a step. 
 #       Multiple calls with the same step may result in loss of metrics.
 add_metrics({"loss": 0.25, "accuracy": 0.99}, step=0)
+
+# For more advanced use cases use the MetricsLogger
+m_logger = MetricsLogger()
+m_logger.add_gauge("loss") # add a specific gauge
+m_logger["loss"].set(0.25)
+m_logger["loss"].inc()
+m_logger.add_gauge("accuracy")
+m_logger["accuracy"].set(0.99)
+m_logger.push_metrics() # you must explicitly push metrics each time you mutate values when using MetricsLogger
 ```
 
 # Contributing
