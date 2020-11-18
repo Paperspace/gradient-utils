@@ -102,7 +102,7 @@ class Metric:
 
     @step.setter
     def step(self, v):
-        if v != None and (not isinstance(v, int) or v < 0):
+        if v is not None and (not isinstance(v, int) or v < 0):
             raise ValueError('Step can only be an integer >= 0')
         self._step = v
 
@@ -121,7 +121,12 @@ class MetricsLogger:
         >>> m_logger.push_metrics()
     """
 
-    def __init__(self, workload_id=None, registry=None, push_gateway=None, step=None):
+    def __init__(
+            self,
+            workload_id=None,
+            registry=None,
+            push_gateway=None,
+            step=None):
         """
         :param str workload_id:
         :param CollectorRegistry registry:

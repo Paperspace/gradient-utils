@@ -153,6 +153,8 @@ def test_should_use_push_to_gateway_to_log_metrics(push_to_gateway_patched):
         gateway=get_metric_pushgateway(),
         job="some_id",
         registry=registry,
-        grouping_key={'label_metrics_experiment_handle': 'some_id', 'step': None},
+        grouping_key={
+            'label_metrics_experiment_handle': 'some_id',
+            'step': None},
         timeout=30,
     )

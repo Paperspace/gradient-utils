@@ -11,7 +11,10 @@ LOCAL_PUSH_GATEWAY = os.getenv('PAPERSPACE_METRIC_PUSHGATEWAY')
 
 def test_add_metric_integration():
     m_logger = MetricsLogger()
-    delete_from_gateway(m_logger.push_gateway, m_logger.id, grouping_key=m_logger.grouping_key)
+    delete_from_gateway(
+        m_logger.push_gateway,
+        m_logger.id,
+        grouping_key=m_logger.grouping_key)
 
     m_logger.add_gauge("some_metric_1")
     m_logger.add_gauge("some_metric_2")
@@ -20,7 +23,8 @@ def test_add_metric_integration():
     m_logger.push_metrics()
 
     expected = {
-        "some_metric_1": '4'
+        "some_metric_1": '4',
+        "some_metric_2": '0'
     }
 
     # Get metrics
@@ -33,14 +37,20 @@ def test_add_metric_integration():
         assert 'GAUGE' == gateway_metrics[key]['type']
 
     # Clean up
-    delete_from_gateway(m_logger.push_gateway, m_logger.id, grouping_key=m_logger.grouping_key)
+    delete_from_gateway(
+        m_logger.push_gateway,
+        m_logger.id,
+        grouping_key=m_logger.grouping_key)
 
 
 def test_add_metrics_pushes_metrics():
     # Before tests, clear the push gateway
     # TODO: Run this before each
     metrics_logger_config = MetricsLogger()
-    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+    delete_from_gateway(
+        metrics_logger_config.push_gateway,
+        metrics_logger_config.id,
+        grouping_key=metrics_logger_config.grouping_key)
 
     registry = CollectorRegistry()
     metrics = {
@@ -62,11 +72,18 @@ def test_add_metrics_pushes_metrics():
         assert 'None' == gateway_metrics[key]['metrics'][0]['labels']['step']
 
     # Clean up
-    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+    delete_from_gateway(
+        metrics_logger_config.push_gateway,
+        metrics_logger_config.id,
+        grouping_key=metrics_logger_config.grouping_key)
+
 
 def test_add_metrics_push_with_step():
     metrics_logger_config = MetricsLogger(step=0)
-    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+    delete_from_gateway(
+        metrics_logger_config.push_gateway,
+        metrics_logger_config.id,
+        grouping_key=metrics_logger_config.grouping_key)
 
     metrics = {
         'cat': 1,
@@ -87,13 +104,23 @@ def test_add_metrics_push_with_step():
         assert '0' == gateway_metrics[key]['metrics'][0]['labels']['step']
 
     # Clean up
-    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+    delete_from_gateway(
+        metrics_logger_config.push_gateway,
+        metrics_logger_config.id,
+        grouping_key=metrics_logger_config.grouping_key)
+
 
 def test_add_metrics_multiple_steps():
     metrics_logger_config = MetricsLogger(step=0)
     metrics_logger_config_1 = MetricsLogger(step=1)
-    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
-    delete_from_gateway(metrics_logger_config_1.push_gateway, metrics_logger_config_1.id, grouping_key=metrics_logger_config_1.grouping_key)
+    delete_from_gateway(
+        metrics_logger_config.push_gateway,
+        metrics_logger_config.id,
+        grouping_key=metrics_logger_config.grouping_key)
+    delete_from_gateway(
+        metrics_logger_config_1.push_gateway,
+        metrics_logger_config_1.id,
+        grouping_key=metrics_logger_config_1.grouping_key)
 
     metrics = {
         'cat': 1,
@@ -130,14 +157,23 @@ def test_add_metrics_multiple_steps():
             gateway_metrics_dict['1'][key]['value'])
         assert 'GAUGE' == gateway_metrics_dict['1'][key]['type']
 
-
     # Clean up
-    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
-    delete_from_gateway(metrics_logger_config_1.push_gateway, metrics_logger_config_1.id, grouping_key=metrics_logger_config_1.grouping_key)
+    delete_from_gateway(
+        metrics_logger_config.push_gateway,
+        metrics_logger_config.id,
+        grouping_key=metrics_logger_config.grouping_key)
+    delete_from_gateway(
+        metrics_logger_config_1.push_gateway,
+        metrics_logger_config_1.id,
+        grouping_key=metrics_logger_config_1.grouping_key)
+
 
 def test_add_metrics_aggregrates_same_step():
     metrics_logger_config = MetricsLogger(step=0)
-    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+    delete_from_gateway(
+        metrics_logger_config.push_gateway,
+        metrics_logger_config.id,
+        grouping_key=metrics_logger_config.grouping_key)
 
     metrics = {
         'cat': 1,
@@ -153,11 +189,18 @@ def test_add_metrics_aggregrates_same_step():
     assert 1 == len(r.json()['data'])
 
     # Clean up
-    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+    delete_from_gateway(
+        metrics_logger_config.push_gateway,
+        metrics_logger_config.id,
+        grouping_key=metrics_logger_config.grouping_key)
+
 
 def test_add_metrics_keeps_last_step():
     metrics_logger_config = MetricsLogger(step=0)
-    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+    delete_from_gateway(
+        metrics_logger_config.push_gateway,
+        metrics_logger_config.id,
+        grouping_key=metrics_logger_config.grouping_key)
 
     add_metrics({
         'cat': 1,
@@ -182,5 +225,7 @@ def test_add_metrics_keeps_last_step():
     assert 'dog' not in r.json()['data'][0]
 
     # Clean up
-    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
-    
+    delete_from_gateway(
+        metrics_logger_config.push_gateway,
+        metrics_logger_config.id,
+        grouping_key=metrics_logger_config.grouping_key)
