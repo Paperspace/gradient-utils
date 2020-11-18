@@ -135,3 +135,52 @@ def test_add_metrics_multiple_steps():
     delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
     delete_from_gateway(metrics_logger_config_1.push_gateway, metrics_logger_config_1.id, grouping_key=metrics_logger_config_1.grouping_key)
 
+def test_add_metrics_aggregrates_same_step():
+    metrics_logger_config = MetricsLogger(step=0)
+    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+
+    metrics = {
+        'cat': 1,
+        'dog': 2,
+        'catdog': 1.2
+    }
+    add_metrics(metrics, step=0)
+    add_metrics(metrics, step=0)
+
+    # Get metrics
+    r = requests.get(f'{LOCAL_PUSH_GATEWAY}/api/v1/metrics')
+    # One row of metrics are aggregrated by the pushgateway
+    assert 1 == len(r.json()['data'])
+
+    # Clean up
+    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+
+def test_add_metrics_keeps_last_step():
+    metrics_logger_config = MetricsLogger(step=0)
+    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+
+    add_metrics({
+        'cat': 1,
+        'dog': 2,
+        'catdog': 1.2
+    }, step=0)
+    add_metrics({
+        'cat': 1,
+        'dragon': 23.5
+    }, step=0)
+    add_metrics({
+        'cat': 7,
+    }, step=0)
+
+    # Get metrics
+    r = requests.get(f'{LOCAL_PUSH_GATEWAY}/api/v1/metrics')
+    # One row of metrics are aggregrated by the pushgateway
+
+    assert '7' == r.json()['data'][0]['cat']['metrics'][0]['value']
+    assert 'dragon' not in r.json()['data'][0]
+    assert 'catdog' not in r.json()['data'][0]
+    assert 'dog' not in r.json()['data'][0]
+
+    # Clean up
+    delete_from_gateway(metrics_logger_config.push_gateway, metrics_logger_config.id, grouping_key=metrics_logger_config.grouping_key)
+    
