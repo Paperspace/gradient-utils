@@ -205,7 +205,8 @@ Usage example:
 
 ```python
 from gradient_utils import MetricsLogger
-from gradient_utils.metrics import add_metrics
+# Comment: add_metrics is not supported at the moment. Stay tuned!
+# from gradient_utils.metrics import add_metrics
 m_logger = MetricsLogger()
 m_logger.add_gauge("some_metric_1")
 m_logger["some_metric_1"].set(3)
@@ -217,10 +218,10 @@ m_logger["some_metric_2"].set_to_current_time()
 m_logger.push_metrics()
 
 # Insert metrics with a single command
-add_metrics({
-  'loss': 0.25,
-  'accuracy': 0.99
-})
+# add_metrics({
+#   'loss': 0.25,
+#   'accuracy': 0.99
+# })
 
 ```
 
