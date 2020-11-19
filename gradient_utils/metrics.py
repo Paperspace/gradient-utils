@@ -1,5 +1,6 @@
 import os
 from numbers import Number
+import logging
 
 from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info
 
@@ -11,6 +12,7 @@ WORKLOAD_ID_ENV = 'PAPERSPACE_METRIC_WORKLOAD_ID'
 LEGACY_EXPERIMENT_ID_ENV = 'PAPERSPACE_EXPERIMENT_ID'
 HOSTNAME = os.getenv("HOSTNAME")
 
+logger = logging.getLogger(__name__)
 
 def get_metric_pushgateway():
     return os.getenv(PUSH_GATEWAY_ENV, PUSH_GATEWAY_DEFAULT)
@@ -65,8 +67,8 @@ def add_metrics(
     metrics = [Metric(key, value) for key, value in metrics.items()]
     for metric in metrics:
         metrics_logger.add_gauge(metric.key)
-        print(metrics_logger[metric.key])
-        print(metric.value)
+        logger.warning(metrics_logger[metric.key])
+        logger.warning(metric.value)
         metrics_logger[metric.key].set(metric.value)
 
     metrics_logger.push_metrics(timeout)
