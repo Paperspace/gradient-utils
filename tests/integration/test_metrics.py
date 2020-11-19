@@ -3,7 +3,8 @@ import pytest
 import requests
 import os
 
-from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry, add_metrics
+from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry
+from gradient_utils.metrics import _add_metrics as add_metrics
 
 LOCAL_PUSH_GATEWAY = os.getenv('PAPERSPACE_METRIC_PUSHGATEWAY')
 
