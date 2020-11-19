@@ -23,5 +23,5 @@ __all__ = [
     "task_index",
     "hyper_tune",
     "MetricsLogger",
-    "add_metrics",
+    # "add_metrics",
 ]
