@@ -20,7 +20,7 @@ This is an SDK for performing Machine Learning with Gradientº, it can be instal
 
 # Requirements
 
-This SDK requires Python 3.5+.
+This SDK requires Python 3.6+.
 
 To install it, run:
 
