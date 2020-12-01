@@ -5,7 +5,7 @@ import logging
 from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info
 
 PUSH_GATEWAY_ENV = 'PAPERSPACE_METRIC_PUSHGATEWAY'
-PUSH_GATEWAY_DEFAULT = 'http://prom-aggregation-gateway:80'
+PUSH_GATEWAY_DEFAULT = 'http://gradient-processing-prometheus-pushgateway:9091'
 WORKLOAD_TYPE_ENV = 'PAPERSPACE_METRIC_WORKLOAD_TYPE'
 WORKLOAD_TYPE_DEFAULT = 'experiment'
 WORKLOAD_ID_ENV = 'PAPERSPACE_METRIC_WORKLOAD_ID'
