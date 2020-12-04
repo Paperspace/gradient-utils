@@ -58,7 +58,7 @@ def get_workload_id():
     return _get_experiment_id()
 
 
-def _add_metrics(
+def add_metrics(
         metrics,
         step=None,
         timeout=30):
@@ -170,7 +170,7 @@ class MetricsLogger:
     def add_info(self, name):
         self._add_metric(Info, name)
 
-    def add_metric(self, cls, name, documentation=""):
+    def _add_metric(self, cls, name, documentation=""):
         new_metric = cls(
             name,
             documentation=documentation,
