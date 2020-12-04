@@ -20,7 +20,7 @@ This is an SDK for performing Machine Learning with Gradientº, it can be instal
 
 # Requirements
 
-This SDK requires Python 3.5+.
+This SDK requires Python 3.6+.
 
 To install it, run:
 
@@ -205,7 +205,8 @@ Usage example:
 
 ```python
 from gradient_utils import MetricsLogger
-from gradient_utils.metrics import add_metrics
+# Comment: add_metrics is not supported at the moment. Stay tuned!
+# from gradient_utils.metrics import add_metrics
 m_logger = MetricsLogger()
 m_logger.add_gauge("some_metric_1")
 m_logger["some_metric_1"].set(3)

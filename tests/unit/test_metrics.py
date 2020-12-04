@@ -1,7 +1,8 @@
 import mock
 import pytest
 
-from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry, add_metrics, Metric
+from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry, Metric
+from gradient_utils.metrics import _add_metrics as add_metrics
 
 
 def test_add_metrics_errors_with_nonstring_key():

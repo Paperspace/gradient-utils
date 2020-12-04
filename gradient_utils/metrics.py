@@ -58,7 +58,7 @@ def get_workload_id():
     return _get_experiment_id()
 
 
-def add_metrics(
+def _add_metrics(
         metrics,
         step=None,
         timeout=30):
