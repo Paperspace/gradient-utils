@@ -5,7 +5,6 @@ from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry, Me
 
 
 def test_add_metrics_errors_with_nonstring_key():
-    registry = CollectorRegistry()
     metrics = {
         23: 2
     }
@@ -17,7 +16,6 @@ def test_add_metrics_errors_with_nonstring_key():
 
 
 def test_add_metrics_errors_with_nonnumber_value():
-    registry = CollectorRegistry()
     metrics = {
         'catdog': '2'
     }
@@ -44,13 +42,13 @@ def test_metric_creates_object():
 
 def test_metric_invalid_key():
     with pytest.raises(ValueError) as e:
-        metric = Metric(100, 100)
+        Metric(100, 100)
     assert "Key of a metric can only be a string" in str(e.value)
 
 
 def test_metric_invalid_value():
     with pytest.raises(ValueError) as e:
-        metric = Metric('key', 'value')
+        Metric('key', 'value')
     assert "Value of a metric can only be a number" in str(e.value)
 
 
@@ -77,15 +75,15 @@ def test_metric_valid_step():
 
 def test_metric_invalid_step():
     with pytest.raises(ValueError) as e:
-        metric = Metric('key', 100, step='One')
+        Metric('key', 100, step='One')
     assert "Step can only be an integer >= 0" in str(e.value)
 
     with pytest.raises(ValueError) as e:
-        metric = Metric('key', 100, step=-1)
+        Metric('key', 100, step=-1)
     assert "Step can only be an integer >= 0" in str(e.value)
 
     with pytest.raises(ValueError) as e:
-        metric = Metric('key', 100, step=2.3)
+        Metric('key', 100, step=2.3)
     assert "Step can only be an integer >= 0" in str(e.value)
 
 

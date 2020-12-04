@@ -67,8 +67,7 @@ def add_metrics(
     metrics = [Metric(key, value) for key, value in metrics.items()]
     for metric in metrics:
         metrics_logger.add_gauge(metric.key)
-        logger.warning(metrics_logger[metric.key])
-        logger.warning(metric.value)
+        logger.debug("Setting metric key: %s, value: %s", metrics_logger[metric.key], metric.value)
         metrics_logger[metric.key].set(metric.value)
 
     metrics_logger.push_metrics(timeout)
