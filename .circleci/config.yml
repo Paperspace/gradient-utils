@@ -19,6 +19,7 @@ commands:
       - run: pip install poetry
       - run: poetry build && pip install dist/*.tar.gz
       - run: pip install tensorflow
+      - run: pip install gradient-sdk
       - run: pip check
 
 jobs:
