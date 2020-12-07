@@ -14,8 +14,6 @@ commands:
       - run: make dc-setup
       - run: make dc-test
   test-package-compatibility:
-    docker:
-      - image: cimg/python:3.9.0
     steps:
       - checkout
       - run: pip install poetry
@@ -23,12 +21,11 @@ commands:
       - run: pip check
 
 jobs:
-  test-package-compatibility:
+  test-39-package-compatibility:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/python:3.9
     steps:
-      - test:
-          version: "3.6"
+      - test-package-compatibility
   test-python36:
     docker:
       - image: cimg/base:stable
