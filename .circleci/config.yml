@@ -12,10 +12,15 @@ commands:
           version: 19.03.13
       - run: sed -i 's/_version_/<<parameters.version>>/' Dockerfile.ci && mv Dockerfile.ci Dockerfile
       - run: make dc-setup
-      - run: docker-compose -f docker-compose.ci.yml run utils pip install gradient
-      - run: docker-compose -f docker-compose.ci.yml run utils pip install tensorflow
-      - run: docker-compose -f docker-compose.ci.yml run utils pip install gradient-sdk
       - run: make dc-test
+  test-package-compatibility:
+    docker:
+      - image: cimg/python:3.9.0
+    steps:
+      - checkout
+      - run: pip install poetry
+      - run: poetry build && pip install dist/*.tar.gz && pip install tensorflow
+      - run: pip check
 
 jobs:
   test-package-compatibility:
