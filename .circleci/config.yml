@@ -13,8 +13,20 @@ commands:
       - run: sed -i 's/_version_/<<parameters.version>>/' Dockerfile.ci && mv Dockerfile.ci Dockerfile
       - run: make dc-setup
       - run: make dc-test
+  test-package-compatibility:
+    steps:
+      - checkout
+      - run: pip install poetry
+      - run: poetry build && pip install dist/*.tar.gz
+      - run: pip install tensorflow
+      - run: pip check
 
 jobs:
+  test-38-package-compatibility:
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - test-package-compatibility
   test-python36:
     docker:
       - image: cimg/base:stable
@@ -55,6 +67,12 @@ workflows:
   version: 2.1
   pipeline:
     jobs:
+      - test-38-package-compatibility:
+        filters:
+          tags:
+            only: /^v.*/
+          branches:
+            only: /^.*/
       - test-python36:
         filters:
           tags:
