@@ -21,9 +21,9 @@ commands:
       - run: pip check
 
 jobs:
-  test-39-package-compatibility:
+  test-38-package-compatibility:
     docker:
-      - image: cimg/python:3.9
+      - image: cimg/python:3.8
     steps:
       - test-package-compatibility
   test-python36:
@@ -66,7 +66,7 @@ workflows:
   version: 2.1
   pipeline:
     jobs:
-      - test-39-package-compatibility:
+      - test-38-package-compatibility:
         filters:
           tags:
             only: /^v.*/
