@@ -17,7 +17,8 @@ commands:
     steps:
       - checkout
       - run: pip install poetry
-      - run: poetry build && pip install dist/*.tar.gz && pip install tensorflow
+      - run: poetry build && pip install dist/*.tar.gz
+      - run: pip install tensorflow
       - run: pip check
 
 jobs:
