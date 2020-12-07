@@ -1,12 +1,10 @@
 import mock
 import pytest
 
-from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry, Metric
-from gradient_utils.metrics import _add_metrics as add_metrics
+from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry, Metric, add_metrics
 
 
 def test_add_metrics_errors_with_nonstring_key():
-    registry = CollectorRegistry()
     metrics = {
         23: 2
     }
@@ -18,7 +16,6 @@ def test_add_metrics_errors_with_nonstring_key():
 
 
 def test_add_metrics_errors_with_nonnumber_value():
-    registry = CollectorRegistry()
     metrics = {
         'catdog': '2'
     }
@@ -40,17 +37,18 @@ def test_metric_creates_object():
     metric = Metric('key', 100)
     assert 'key' == metric.key
     assert 100 == metric.value
+    assert None is metric.step
 
 
 def test_metric_invalid_key():
     with pytest.raises(ValueError) as e:
-        metric = Metric(100, 100)
+        Metric(100, 100)
     assert "Key of a metric can only be a string" in str(e.value)
 
 
 def test_metric_invalid_value():
     with pytest.raises(ValueError) as e:
-        metric = Metric('key', 'value')
+        Metric('key', 'value')
     assert "Value of a metric can only be a number" in str(e.value)
 
 
@@ -66,3 +64,31 @@ def test_metric_invalid_reassign_value():
     with pytest.raises(ValueError) as e:
         metric.value = 'value'
     assert "Value of a metric can only be a number" in str(e.value)
+
+
+def test_metric_valid_step():
+    metric = Metric('key', 100, step=1)
+    assert 1 == metric.step
+    metric.step = 0
+    assert 0 == metric.step
+
+
+def test_metric_invalid_step():
+    with pytest.raises(ValueError) as e:
+        Metric('key', 100, step='One')
+    assert "Step can only be an integer >= 0" in str(e.value)
+
+    with pytest.raises(ValueError) as e:
+        Metric('key', 100, step=-1)
+    assert "Step can only be an integer >= 0" in str(e.value)
+
+    with pytest.raises(ValueError) as e:
+        Metric('key', 100, step=2.3)
+    assert "Step can only be an integer >= 0" in str(e.value)
+
+
+def test_metric_invalid_changing_step():
+    metric = Metric('key', 100, step=1)
+    with pytest.raises(ValueError) as e:
+        metric.step = 'One'
+    assert "Step can only be an integer >= 0" in str(e.value)

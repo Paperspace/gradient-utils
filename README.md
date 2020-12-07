@@ -218,11 +218,12 @@ m_logger["some_metric_2"].set_to_current_time()
 m_logger.push_metrics()
 
 # Insert metrics with a single command
-# add_metrics({
-#   'loss': 0.25,
-#   'accuracy': 0.99
-# })
+add_metrics({"loss": 0.25, "accuracy": 0.99})
 
+# Insert metrics with a step value
+# Note: add_metrics should be called once for a step. 
+#       Multiple calls with the same step may result in loss of metrics.
+add_metrics({"loss": 0.25, "accuracy": 0.99}, step=0)
 ```
 
 # Contributing
@@ -237,5 +238,8 @@ docker-compose build utils
 
 # To run tests
 docker-compose -f docker-compose.ci.yml run utils poetry run pytest
+
+# To autoformat
+docker-compose run utils poetry run autopep8 --in-place --aggressive --aggressive --recursive .
 ```
 

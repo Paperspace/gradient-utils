@@ -1,16 +1,18 @@
 import os
 from numbers import Number
+import logging
 
-from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info, REGISTRY
+from prometheus_client import push_to_gateway, Gauge, CollectorRegistry, Counter, Summary, Histogram, Info
 
 PUSH_GATEWAY_ENV = 'PAPERSPACE_METRIC_PUSHGATEWAY'
-PUSH_GATEWAY_DEFAULT = 'http://prom-aggregation-gateway:80'
+PUSH_GATEWAY_DEFAULT = 'http://gradient-processing-prometheus-pushgateway:9091'
 WORKLOAD_TYPE_ENV = 'PAPERSPACE_METRIC_WORKLOAD_TYPE'
 WORKLOAD_TYPE_DEFAULT = 'experiment'
 WORKLOAD_ID_ENV = 'PAPERSPACE_METRIC_WORKLOAD_ID'
 LEGACY_EXPERIMENT_ID_ENV = 'PAPERSPACE_EXPERIMENT_ID'
 HOSTNAME = os.getenv("HOSTNAME")
 
+logger = logging.getLogger(__name__)
 
 def get_metric_pushgateway():
     return os.getenv(PUSH_GATEWAY_ENV, PUSH_GATEWAY_DEFAULT)
@@ -56,23 +58,26 @@ def get_workload_id():
     return _get_experiment_id()
 
 
-def _add_metrics(
+def add_metrics(
         metrics,
+        step=None,
         timeout=30):
-    metrics_logger = MetricsLogger()
+    metrics_logger = MetricsLogger(step=step)
 
     metrics = [Metric(key, value) for key, value in metrics.items()]
     for metric in metrics:
         metrics_logger.add_gauge(metric.key)
+        logger.debug("Setting metric key: %s, value: %s", metrics_logger[metric.key], metric.value)
         metrics_logger[metric.key].set(metric.value)
 
     metrics_logger.push_metrics(timeout)
 
 
 class Metric:
-    def __init__(self, key, value):
+    def __init__(self, key, value, step=None):
         self.key = key
         self.value = value
+        self.step = step
 
     @property
     def key(self):
@@ -94,6 +99,16 @@ class Metric:
             raise ValueError('Value of a metric can only be a number')
         self._value = v
 
+    @property
+    def step(self):
+        return self._step
+
+    @step.setter
+    def step(self, v):
+        if v is not None and (not isinstance(v, int) or v < 0):
+            raise ValueError('Step can only be an integer >= 0')
+        self._step = v
+
 
 class MetricsLogger:
     """Prometheus wrapper for logging custom metrics
@@ -109,18 +124,27 @@ class MetricsLogger:
         >>> m_logger.push_metrics()
     """
 
-    def __init__(self, workload_id=None, registry=REGISTRY, push_gateway=None):
+    def __init__(
+            self,
+            workload_id=None,
+            registry=None,
+            push_gateway=None,
+            step=None):
         """
         :param str workload_id:
         :param CollectorRegistry registry:
         :param str push_gateway:
         """
         self.id = workload_id or get_workload_id()
-        self.registry = registry
-        self.grouping_key = {get_workload_label(): self.id}
+        self.registry = registry or CollectorRegistry(auto_describe=True)
+        self.grouping_key = {
+            get_workload_label(): self.id,
+            'step': step
+        }
         self.push_gateway = push_gateway or get_metric_pushgateway()
 
         self._metrics = dict()
+        self._step = step
 
     def __getitem__(self, item):
         """
@@ -128,7 +152,7 @@ class MetricsLogger:
 
         :rtype Gauge|Counter|Summary|Histogram|Info
         """
-        return self._metrics[item].labels(self.id, HOSTNAME)
+        return self._metrics[item]
 
     def add_gauge(self, name):
         self._add_metric(Gauge, name)
@@ -152,8 +176,9 @@ class MetricsLogger:
             registry=self.registry,
             labelnames=[
                 get_workload_label(),
-                "pod"])
-        self._metrics[name] = new_metric
+                "pod",
+                "step"])
+        self._metrics[name] = new_metric.labels(self.id, HOSTNAME, self._step)
 
     def push_metrics(self, timeout=30):
         push_to_gateway(
