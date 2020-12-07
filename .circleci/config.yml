@@ -12,9 +12,18 @@ commands:
           version: 19.03.13
       - run: sed -i 's/_version_/<<parameters.version>>/' Dockerfile.ci && mv Dockerfile.ci Dockerfile
       - run: make dc-setup
+      - run: docker-compose -f docker-compose.ci.yml run utils pip install gradient
+      - run: docker-compose -f docker-compose.ci.yml run utils pip install tensorflow
+      - run: docker-compose -f docker-compose.ci.yml run utils pip install gradient-sdk
       - run: make dc-test
 
 jobs:
+  test-package-compatibility:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - test:
+          version: "3.6"
   test-python36:
     docker:
       - image: cimg/base:stable
@@ -55,6 +64,12 @@ workflows:
   version: 2.1
   pipeline:
     jobs:
+      - test-package-compatibility:
+        filters:
+          tags:
+            only: /^v.*/
+          branches:
+            only: /^.*/
       - test-python36:
         filters:
           tags:
