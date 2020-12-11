@@ -10,7 +10,7 @@ def add_metrics(
         metrics,
         step=None,
         timeout=30):
-    metrics_logger = MetricsLogger(step=step)
+    metrics_logger = MetricsLogger(step=step, grouping_key={"hash": hash(frozenset(metrics.items()))})
 
     metrics = [Metric(key, value) for key, value in metrics.items()]
     for metric in metrics:
@@ -77,7 +77,8 @@ class MetricsLogger:
             workload_id=None,
             registry=None,
             push_gateway=None,
-            step=None):
+            step=None,
+            grouping_key={}):
         """
         :param str workload_id:
         :param CollectorRegistry registry:
@@ -85,10 +86,11 @@ class MetricsLogger:
         """
         self.id = workload_id or get_workload_id()
         self.registry = registry or CollectorRegistry(auto_describe=True)
-        self.grouping_key = {
+        self.grouping_key = grouping_key.copy()
+        self.grouping_key.update({
             get_workload_label(): self.id,
             'step': step
-        }
+        })
         self.push_gateway = push_gateway or get_metric_pushgateway()
 
         self._metrics = dict()
