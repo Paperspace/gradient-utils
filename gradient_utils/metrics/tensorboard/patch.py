@@ -27,7 +27,7 @@ def patch():
 
     if not c and not tb and not pt:
         raise ValueError(
-            "Unsupported tensorboard configuration"
+            "Could not find a valid tensorboard module to patch"
         )
 
     patched = []

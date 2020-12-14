@@ -14,6 +14,14 @@ def test_init_sync_tensorboard():
     assert(len(patched["tensorboard"]) > 0)
 
 
+def test_init_sync_tensorboard_twice():
+    init(sync_tensorboard=True)
+    try:
+        init(sync_tensorboard=True)
+    except Exception as e:
+        assert e == "Tensorboard already patched. You may be calling metrics.init() more than once."
+
+
 def test_add_metrics_errors_with_nonstring_key():
     metrics = {
         23: 2
