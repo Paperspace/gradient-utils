@@ -1,10 +1,8 @@
-import mock
-import pytest
 import requests
 import os
 from prometheus_client import delete_from_gateway
 
-from gradient_utils.metrics import get_metric_pushgateway, CollectorRegistry, add_metrics, MetricsLogger
+from gradient_utils.metrics.metrics import MetricsLogger, add_metrics
 
 LOCAL_PUSH_GATEWAY = os.getenv('PAPERSPACE_METRIC_PUSHGATEWAY')
 
@@ -52,7 +50,6 @@ def test_add_metrics_pushes_metrics():
         metrics_logger_config.id,
         grouping_key=metrics_logger_config.grouping_key)
 
-    registry = CollectorRegistry()
     metrics = {
         'cat': 1,
         'dog': 2,
