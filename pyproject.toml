@@ -25,7 +25,7 @@ wheel = "^0.35.1"
 hyperopt = "0.1.2"
 pymongo = "^3.11.0"
 prometheus-client = ">=0.8,<0.10"
-numpy = "1.18.5"
+numpy = ">=1.18.5"
 
 [tool.poetry.dev-dependencies]
 tox = "^3.20.1"
