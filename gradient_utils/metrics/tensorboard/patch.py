@@ -37,7 +37,6 @@ def patch(settings=None):
             "Could not find a valid tensorboard module to patch"
         )
 
-    patched = []
     if c:
         _patch_tensorboard(writer=c, module=TENSORBOARD_C_MODULE, settings=settings)
     if tb:
@@ -100,6 +99,7 @@ def _patch_tensorboardx(writer, module, settings):
 def on_new_logdir(logdir, settings):
     logger.debug("Watching %s", logdir)
     watcher = LogdirWatcher(logdir, settings)
+    settings.tensorboard_watchers.append(watcher)
     watcher.start()
 
 
@@ -114,6 +114,7 @@ class LogdirWatcher(object):
         self._generator = self.directory_watcher.DirectoryWatcher(logdir, self.event_file_loader.EventFileLoader,
                                                                   self._is_new_tfevents_file)
         self._thread = threading.Thread(target=self._thread_body)
+        self._stopped = None
 
     def start(self):
         self._thread.start()
@@ -127,6 +128,9 @@ class LogdirWatcher(object):
                     self._process_event(event)
             except self.directory_watcher.DirectoryDeletedError:
                 logger.debug("directory deleted")
+                break
+            if self._stopped is not None and self._stopped + 5 < time.time():
+                logger.debug("stopped")
                 break
 
     def _process_event(self, event):
@@ -150,6 +154,10 @@ class LogdirWatcher(object):
         return is_new_tfevents_file(
             path, self._hostname, self._settings.start_time
         )
+
+    def finish(self):
+        self._stopped = time.time()
+        self._thread.join()
 
 
 def is_new_tfevents_file(path, hostname, start_time):
