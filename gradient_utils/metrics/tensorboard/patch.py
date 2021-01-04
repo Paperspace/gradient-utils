@@ -7,6 +7,7 @@ import os
 from importlib import import_module, reload
 from gradient_utils import metrics
 
+logger = logging.getLogger(__name__)
 if os.getenv("PAPERSPACE_DEBUG"):
     reload(logging)
     logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', level=logging.DEBUG, datefmt='%I:%M:%S')

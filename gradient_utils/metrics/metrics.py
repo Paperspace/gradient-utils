@@ -7,12 +7,11 @@ logger = logging.getLogger(__name__)
 
 
 def add_metrics(
-        metrics,
+        metrics_map,
         step=None,
         timeout=30):
-    metrics_logger = MetricsLogger(step=step, grouping_key={"hash": hash(frozenset(metrics.items()))})
-
-    metrics = [Metric(key, value) for key, value in metrics.items()]
+    metrics = [Metric(key, value) for key, value in metrics_map.items()]
+    metrics_logger = MetricsLogger(step=step, grouping_key={"hash": hash(frozenset(metrics_map.items()))})
     for metric in metrics:
         metrics_logger.add_gauge(metric.key)
         logger.debug("Setting metric key: %s, value: %s", metrics_logger[metric.key], metric.value)
