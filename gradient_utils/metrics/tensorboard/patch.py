@@ -7,10 +7,11 @@ import os
 from importlib import import_module, reload
 from gradient_utils import metrics
 
-reload(logging)
-logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', level=logging.DEBUG, datefmt='%I:%M:%S')
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+if os.getenv("PAPERSPACE_DEBUG"):
+    reload(logging)
+    logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', level=logging.DEBUG, datefmt='%I:%M:%S')
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
 TENSORBOARD_C_MODULE = "tensorflow.python.ops.gen_summary_ops"
 TENSORBOARD_WRITER_MODULE = "tensorboard.summary.writer.event_file_writer"
 TENSORBOARDX_WRITER_MODULE = "tensorboardX.event_file_writer"
@@ -67,7 +68,6 @@ def _patch_tensorboard(writer, module, settings):
     prev_func = writer.create_summary_file_writer
 
     def new_func(*args, **kwargs):
-        logger.debug("new_func")
         logdir = (
             kwargs["logdir"].numpy().decode("utf8")
             if hasattr(kwargs["logdir"], "numpy")
@@ -100,7 +100,7 @@ def _patch_tensorboardx(writer, module, settings):
 
 
 def on_new_logdir(logdir, settings):
-    logger.debug("Watching %s", logdir)
+    logger.debug("watching %s", logdir)
     watcher = LogdirWatcher(logdir, settings)
     settings.tensorboard_watchers.append(watcher)
     watcher.start()
@@ -123,17 +123,16 @@ class LogdirWatcher(object):
         self._thread.start()
 
     def _thread_body(self):
-        logger.debug("_thread_body")
         while True:
             time.sleep(1)
             try:
                 for event in self._generator.Load():
                     self._process_event(event)
             except self.directory_watcher.DirectoryDeletedError:
-                logger.debug("directory deleted")
+                logger.debug("watched directory deleted")
                 break
             if self._stopped is not None and self._stopped + 5 < time.time():
-                logger.debug("stopped")
+                logger.debug("watch stopped")
                 break
 
     def _process_event(self, event):
@@ -201,13 +200,9 @@ def get_metric_from_summary(value):
         tensor = value.tensor
         if tensor.tensor_content:
             # TODO marshal tensor_content
-            logger.debug("exiting tensor_content")
             return None
-        logger.debug(tensor.dtype)
-        if tensor.dtype == 1:
-            logger.debug(tensor)
-            if tensor.float_val:
-                return tensor.float_val[0]
+        if tensor.dtype == 1 and tensor.float_val:
+            return tensor.float_val[0]
         if tensor.dtype == 2 and tensor.double_val:
             return tensor.double_val[0]
         if tensor.dtype in [3, 4, 5, 6] and tensor.int_val:
