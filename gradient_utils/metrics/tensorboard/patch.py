@@ -11,7 +11,7 @@ reload(logging)
 logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', level=logging.DEBUG, datefmt='%I:%M:%S')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-TENSORBOARD_C_MODULE = "tensorboard.python.ops.gen_summary_ops"
+TENSORBOARD_C_MODULE = "tensorflow.python.ops.gen_summary_ops"
 TENSORBOARD_WRITER_MODULE = "tensorboard.summary.writer.event_file_writer"
 TENSORBOARDX_WRITER_MODULE = "tensorboardX.event_file_writer"
 TENSORBOARD_PYTORCH_MODULE = "torch.utils.tensorboard.writer"
@@ -39,8 +39,11 @@ def patch(settings=None):
 
     if c:
         _patch_tensorboard(writer=c, module=TENSORBOARD_C_MODULE, settings=settings)
+        del sys.modules["tensorflow.python.ops.gen_summary_ops"]
     if tb:
         _patch_tensorboardx(writer=tb, module=TENSORBOARD_WRITER_MODULE, settings=settings)
+        del sys.modules["tensorboard.summary.writer"]
+        del sys.modules["tensorboard.summary.writer.event_file_writer"]
     if tbx:
         _patch_tensorboardx(writer=tbx, module=TENSORBOARDX_WRITER_MODULE, settings=settings)
         del sys.modules["tensorboardX"]
