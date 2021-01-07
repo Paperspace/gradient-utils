@@ -12,11 +12,11 @@ def test_should_create_metrics_logger_instance_with_required_parameters(
     metrics_logger = MetricsLogger()
 
     assert metrics_logger.id == "some_id"
-    assert metrics_logger.grouping_key == {
+    assert metrics_logger._grouping_key == {
         'label_metrics_experiment_handle': 'some_id',
         'step': None}
-    assert metrics_logger.push_gateway == "some_gateway"
-    assert isinstance(metrics_logger.registry, CollectorRegistry)
+    assert metrics_logger._push_gateway == "some_gateway"
+    assert isinstance(metrics_logger._registry, CollectorRegistry)
 
 
 @mock.patch("gradient_utils.metrics.metrics.get_metric_pushgateway")
@@ -33,8 +33,8 @@ def test_should_create_metrics_logger_instance_with_all_parameters(
     )
 
     assert metrics_logger.id == "some_id"
-    assert metrics_logger.push_gateway == push_gateway
-    assert metrics_logger.registry is registry
+    assert metrics_logger._push_gateway == push_gateway
+    assert metrics_logger._registry is registry
     get_workload_id_patched.assert_not_called()
     get_metric_pushgateway_patched.assert_not_called()
 

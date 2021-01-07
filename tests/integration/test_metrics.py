@@ -2,17 +2,36 @@ import requests
 import os
 from prometheus_client import delete_from_gateway
 
-from gradient_utils.metrics.metrics import MetricsLogger, add_metrics
+from gradient_utils.metrics.metrics import MetricsLogger, add_metrics, _get_default_grouping_key
+from gradient_utils.metrics.env import get_workload_id, get_metric_pushgateway
 
 LOCAL_PUSH_GATEWAY = os.getenv('PAPERSPACE_METRIC_PUSHGATEWAY')
+
+
+def clean_up_gateway(metric_names=None, steps=None):
+    if metric_names is None:
+        return
+    if steps is None:
+        steps = ["None"]
+    for step in steps:
+        for metric_name in metric_names:
+            grouping_key = (_get_default_grouping_key())
+            grouping_key.update({
+                "name": metric_name,
+                "step": step,
+            })
+            delete_from_gateway(
+                get_metric_pushgateway(),
+                get_workload_id(),
+                grouping_key=grouping_key)
 
 
 def test_add_metric_integration():
     m_logger = MetricsLogger()
     delete_from_gateway(
-        m_logger.push_gateway,
+        m_logger._push_gateway,
         m_logger.id,
-        grouping_key=m_logger.grouping_key)
+        grouping_key=m_logger._grouping_key)
 
     m_logger.add_gauge("some_metric_1")
     m_logger.add_gauge("some_metric_2")
@@ -36,20 +55,12 @@ def test_add_metric_integration():
 
     # Clean up
     delete_from_gateway(
-        m_logger.push_gateway,
+        m_logger._push_gateway,
         m_logger.id,
-        grouping_key=m_logger.grouping_key)
+        grouping_key=m_logger._grouping_key)
 
 
 def test_add_metrics_pushes_metrics():
-    # Before tests, clear the push gateway
-    # TODO: Run this before each
-    metrics_logger_config = MetricsLogger()
-    delete_from_gateway(
-        metrics_logger_config.push_gateway,
-        metrics_logger_config.id,
-        grouping_key=metrics_logger_config.grouping_key)
-
     metrics = {
         'cat': 1,
         'dog': 2,
@@ -59,29 +70,26 @@ def test_add_metrics_pushes_metrics():
 
     # Get metrics
     r = requests.get(f'{LOCAL_PUSH_GATEWAY}/api/v1/metrics')
-    gateway_metrics = r.json()['data'][0]
+    gateway_metrics = r.json()['data']
     for key in metrics:
         # Each metric is returned in a dictionary so we need to get the singular key
         # Assert value returned by gateway matches what we provided
+        metric = None
+        for m in gateway_metrics:
+            if key in m:
+                metric = m
+                break
+        assert metric
         assert metrics[key] == float(
-            gateway_metrics[key]['metrics'][0]['value'])
-        assert 'GAUGE' == gateway_metrics[key]['type']
-        assert 'None' == gateway_metrics[key]['metrics'][0]['labels']['step']
+            metric[key]['metrics'][0]['value'])
+        assert 'GAUGE' == metric[key]['type']
+        assert 'None' == metric[key]['metrics'][0]['labels']['step']
 
     # Clean up
-    delete_from_gateway(
-        metrics_logger_config.push_gateway,
-        metrics_logger_config.id,
-        grouping_key=metrics_logger_config.grouping_key)
+    clean_up_gateway(['cat', 'dog', 'catdog'])
 
 
 def test_add_metrics_push_with_step():
-    metrics_logger_config = MetricsLogger(step=0)
-    delete_from_gateway(
-        metrics_logger_config.push_gateway,
-        metrics_logger_config.id,
-        grouping_key=metrics_logger_config.grouping_key)
-
     metrics = {
         'cat': 1,
         'dog': 2,
@@ -91,34 +99,26 @@ def test_add_metrics_push_with_step():
 
     # Get metrics
     r = requests.get(f'{LOCAL_PUSH_GATEWAY}/api/v1/metrics')
-    gateway_metrics = r.json()['data'][0]
+    gateway_metrics = r.json()['data']
     for key in metrics:
         # Each metric is returned in a dictionary so we need to get the singular key
         # Assert value returned by gateway matches what we provided
+        metric = None
+        for m in gateway_metrics:
+            if key in m:
+                metric = m
+                break
+        assert metric
         assert metrics[key] == float(
-            gateway_metrics[key]['metrics'][0]['value'])
-        assert 'GAUGE' == gateway_metrics[key]['type']
-        assert '0' == gateway_metrics[key]['metrics'][0]['labels']['step']
+            metric[key]['metrics'][0]['value'])
+        assert 'GAUGE' == metric[key]['type']
+        assert '0' == metric[key]['metrics'][0]['labels']['step']
 
     # Clean up
-    delete_from_gateway(
-        metrics_logger_config.push_gateway,
-        metrics_logger_config.id,
-        grouping_key=metrics_logger_config.grouping_key)
+    clean_up_gateway(['cat', 'dog', 'catdog'], [0])
 
 
 def test_add_metrics_multiple_steps():
-    metrics_logger_config = MetricsLogger(step=0)
-    metrics_logger_config_1 = MetricsLogger(step=1)
-    delete_from_gateway(
-        metrics_logger_config.push_gateway,
-        metrics_logger_config.id,
-        grouping_key=metrics_logger_config.grouping_key)
-    delete_from_gateway(
-        metrics_logger_config_1.push_gateway,
-        metrics_logger_config_1.id,
-        grouping_key=metrics_logger_config_1.grouping_key)
-
     metrics = {
         'cat': 1,
         'dog': 2,
@@ -136,11 +136,14 @@ def test_add_metrics_multiple_steps():
     }
     for inserted_metrics in gateway_metrics:
         for key in metrics:
-            step = inserted_metrics[key]['metrics'][0]['labels']['step']
-            gateway_metrics_dict[step][key] = {}
-            gateway_metrics_dict[step][key]['step'] = inserted_metrics[key]['metrics'][0]['labels']['step']
-            gateway_metrics_dict[step][key]['value'] = inserted_metrics[key]['metrics'][0]['value']
-            gateway_metrics_dict[step][key]['type'] = inserted_metrics[key]['type']
+            if key in inserted_metrics:
+                step = inserted_metrics[key]['metrics'][0]['labels']['step']
+                print(step)
+                print(key)
+                gateway_metrics_dict[step][key] = {}
+                gateway_metrics_dict[step][key]['step'] = inserted_metrics[key]['metrics'][0]['labels']['step']
+                gateway_metrics_dict[step][key]['value'] = inserted_metrics[key]['metrics'][0]['value']
+                gateway_metrics_dict[step][key]['type'] = inserted_metrics[key]['type']
 
     # Step 0
     for key in metrics:
@@ -155,23 +158,10 @@ def test_add_metrics_multiple_steps():
         assert 'GAUGE' == gateway_metrics_dict['1'][key]['type']
 
     # Clean up
-    delete_from_gateway(
-        metrics_logger_config.push_gateway,
-        metrics_logger_config.id,
-        grouping_key=metrics_logger_config.grouping_key)
-    delete_from_gateway(
-        metrics_logger_config_1.push_gateway,
-        metrics_logger_config_1.id,
-        grouping_key=metrics_logger_config_1.grouping_key)
+    clean_up_gateway(["cat", "dog", "catdog"], [0, 1])
 
 
-def test_add_metrics_aggregrates_same_step():
-    metrics_logger_config = MetricsLogger(step=0)
-    delete_from_gateway(
-        metrics_logger_config.push_gateway,
-        metrics_logger_config.id,
-        grouping_key=metrics_logger_config.grouping_key)
-
+def test_add_metrics_overwrites_same_step():
     metrics = {
         'cat': 1,
         'dog': 2,
@@ -182,22 +172,19 @@ def test_add_metrics_aggregrates_same_step():
 
     # Get metrics
     r = requests.get(f'{LOCAL_PUSH_GATEWAY}/api/v1/metrics')
-    # One row of metrics are aggregrated by the pushgateway
-    assert 1 == len(r.json()['data'])
+    # One row per metric are kept by the pushgateway
+    assert 3 == len(r.json()['data'])
 
     # Clean up
-    delete_from_gateway(
-        metrics_logger_config.push_gateway,
-        metrics_logger_config.id,
-        grouping_key=metrics_logger_config.grouping_key)
+    clean_up_gateway(['cat', 'dog', 'catdog'], [0])
 
 
 def test_add_metrics_keeps_last_step():
     metrics_logger_config = MetricsLogger(step=0)
     delete_from_gateway(
-        metrics_logger_config.push_gateway,
+        metrics_logger_config._push_gateway,
         metrics_logger_config.id,
-        grouping_key=metrics_logger_config.grouping_key)
+        grouping_key=metrics_logger_config._grouping_key)
 
     add_metrics({
         'cat': 1,
@@ -216,13 +203,17 @@ def test_add_metrics_keeps_last_step():
     r = requests.get(f'{LOCAL_PUSH_GATEWAY}/api/v1/metrics')
     # One row of metrics are aggregrated by the pushgateway
 
-    assert '7' == r.json()['data'][0]['cat']['metrics'][0]['value']
-    assert 'dragon' not in r.json()['data'][0]
-    assert 'catdog' not in r.json()['data'][0]
-    assert 'dog' not in r.json()['data'][0]
+    gateway_metrics = r.json()['data']
+    assert 4 == len(gateway_metrics)
+    for metric in gateway_metrics:
+        if "cat" in metric:
+            assert '7' == metric['cat']['metrics'][0]['value']
+        if "dog" in metric:
+            assert '2' == metric['dog']['metrics'][0]['value']
+        if "catdog" in metric:
+            assert '1.2' == metric['catdog']['metrics'][0]['value']
+        if "dragon" in metric:
+            assert '23.5' == metric['dragon']['metrics'][0]['value']
 
     # Clean up
-    delete_from_gateway(
-        metrics_logger_config.push_gateway,
-        metrics_logger_config.id,
-        grouping_key=metrics_logger_config.grouping_key)
+    clean_up_gateway(['cat', 'dog', 'catdog', 'dragon'], [0])
