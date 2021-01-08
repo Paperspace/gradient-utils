@@ -207,10 +207,14 @@ Usage example:
 from gradient_utils.metrics import init, add_metrics, MetricsLogger
 
 # Initialize metrics logging
-init()
+with init():
+    # do work here
+    pass
 
 # Capture metrics produced by tensorboard
-init(sync_tensorboard=True)
+with init(sync_tensorboard=True):
+    # do work here
+    pass
 
 # Log metrics with a single command
 add_metrics({"loss": 0.25, "accuracy": 0.99})
@@ -221,13 +225,22 @@ add_metrics({"loss": 0.25, "accuracy": 0.99})
 add_metrics({"loss": 0.25, "accuracy": 0.99}, step=0)
 
 # For more advanced use cases use the MetricsLogger
-m_logger = MetricsLogger()
-m_logger.add_gauge("loss") # add a specific gauge
-m_logger["loss"].set(0.25)
-m_logger["loss"].inc()
-m_logger.add_gauge("accuracy")
-m_logger["accuracy"].set(0.99)
-m_logger.push_metrics() # you must explicitly push metrics each time you mutate values when using MetricsLogger
+logger = MetricsLogger()
+logger.add_gauge("loss") # add a specific gauge
+logger["loss"].set(0.25)
+logger["loss"].inc()
+logger.add_gauge("accuracy")
+logger["accuracy"].set(0.99)
+logger.push_metrics() # you must explicitly push metrics each time you mutate values when using MetricsLogger
+
+# You can also use steps with the MetricsLogger
+logger = MetricsLogger(step=0)
+logger.add_gauge("loss")
+logger["loss"].set(0.25)
+logger.push_metrics()
+logger.set_step(1) # update step explicitly
+logger["loss"].set(0.25)
+logger.push_metrics()
 ```
 
 # Contributing
