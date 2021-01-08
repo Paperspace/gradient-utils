@@ -107,7 +107,7 @@ def on_new_logdir(logdir, settings):
     watcher.start()
 
 
-class LogdirWatcher(object):
+class LogdirWatcher():
     def __init__(self, logdir, settings):
         self._logdir = logdir
         self._settings = settings
