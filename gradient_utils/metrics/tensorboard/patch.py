@@ -142,6 +142,8 @@ class LogdirWatcher(object):
                 step = event.step
                 summary = event.summary
                 for value in summary.value:
+                    # This line transforms the metric name into one that passes Prometheus name validation
+                    # TODO encode invalid characters instead of transforming them
                     name = value.tag.replace(".", "_").replace("/", "_").replace(" ", "_")
                     metric = get_metric_from_summary(value)
                     if metric:
