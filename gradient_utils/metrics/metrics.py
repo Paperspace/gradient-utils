@@ -6,19 +6,43 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def _get_default_grouping_key(workload_id=None, step=None):
+    return {
+        get_workload_label(): workload_id or get_workload_id(),
+        'step': step,
+    }
+
+
 def add_metrics(
-        metrics,
+        metrics_map,
         step=None,
         timeout=30):
-    metrics_logger = MetricsLogger(step=step)
-
-    metrics = [Metric(key, value) for key, value in metrics.items()]
+    metrics = [Metric(key, value) for key, value in metrics_map.items()]
+    default_grouping_key = _get_default_grouping_key(step=step)
     for metric in metrics:
-        metrics_logger.add_gauge(metric.key)
-        logger.debug("Setting metric key: %s, value: %s", metrics_logger[metric.key], metric.value)
-        metrics_logger[metric.key].set(metric.value)
-
-    metrics_logger.push_metrics(timeout)
+        registry = CollectorRegistry(auto_describe=True)
+        new_metric_raw = Gauge(
+            metric.key,
+            documentation="",
+            registry=registry,
+            labelnames=[
+                get_workload_label(),
+                "pod",
+                "step"])
+        new_metric = new_metric_raw.labels(get_workload_id(), HOSTNAME, step)
+        new_metric.set(metric.value)
+        new_grouping_key = {
+            "name": metric.key,
+        }
+        new_grouping_key.update(default_grouping_key)
+        logger.debug("Setting metric key: %s, value: %s", metric.key, metric.value)
+        push_to_gateway(
+            gateway=get_metric_pushgateway(),
+            job=get_workload_id(),
+            registry=registry,
+            grouping_key=new_grouping_key,
+            timeout=timeout,
+        )
 
 
 class Metric:
@@ -82,17 +106,14 @@ class MetricsLogger:
         :param str workload_id:
         :param CollectorRegistry registry:
         :param str push_gateway:
+        :param int step:
         """
         self.id = workload_id or get_workload_id()
-        self.registry = registry or CollectorRegistry(auto_describe=True)
-        self.grouping_key = {
-            get_workload_label(): self.id,
-            'step': step
-        }
-        self.push_gateway = push_gateway or get_metric_pushgateway()
-
-        self._metrics = dict()
+        self._registry = registry or CollectorRegistry(auto_describe=True)
         self._step = step
+        self._grouping_key = _get_default_grouping_key(self.id, self._step)
+        self._push_gateway = push_gateway or get_metric_pushgateway()
+        self._metrics = dict()
 
     def __getitem__(self, item):
         """
@@ -101,6 +122,12 @@ class MetricsLogger:
         :rtype Gauge|Counter|Summary|Histogram|Info
         """
         return self._metrics[item]
+
+    def set_step(self, step):
+        self._step = step
+        self._grouping_key.update({
+            'step': step,
+        })
 
     def add_gauge(self, name):
         self._add_metric(Gauge, name)
@@ -121,7 +148,7 @@ class MetricsLogger:
         new_metric = cls(
             name,
             documentation=documentation,
-            registry=self.registry,
+            registry=self._registry,
             labelnames=[
                 get_workload_label(),
                 "pod",
@@ -130,9 +157,9 @@ class MetricsLogger:
 
     def push_metrics(self, timeout=30):
         push_to_gateway(
-            gateway=self.push_gateway,
+            gateway=self._push_gateway,
             job=self.id,
-            registry=self.registry,
-            grouping_key=self.grouping_key,
+            registry=self._registry,
+            grouping_key=self._grouping_key,
             timeout=timeout,
         )
