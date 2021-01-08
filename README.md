@@ -31,7 +31,7 @@ pip install gradient-utils
 # Usage
 
 ## Metrics
-Prometheus wrapper for logging custom metrics
+Library for logging custom and framework metrics in Gradient.
 
 Usage example:
 
