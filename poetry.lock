@@ -565,7 +565,7 @@ dev = ["py-make (>=0.1.0)", "twine", "argopt", "pydoc-markdown", "wheel"]
 
 [[package]]
 name = "urllib3"
-version = "1.26.2"
+version = "1.26.3"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "dev"
 optional = false
@@ -999,8 +999,8 @@ tqdm = [
     {file = "tqdm-4.54.1.tar.gz", hash = "sha256:38b658a3e4ecf9b4f6f8ff75ca16221ae3378b2e175d846b6b33ea3a20852cf5"},
 ]
 urllib3 = [
-    {file = "urllib3-1.26.2-py2.py3-none-any.whl", hash = "sha256:d8ff90d979214d7b4f8ce956e80f4028fc6860e4431f731ea4a8c08f23f99473"},
-    {file = "urllib3-1.26.2.tar.gz", hash = "sha256:19188f96923873c92ccb987120ec4acaa12f0461fa9ce5d3d0772bc965a39e08"},
+    {file = "urllib3-1.26.3-py2.py3-none-any.whl", hash = "sha256:1b465e494e3e0d8939b50680403e3aedaa2bc434b7d5af64dfd3c958d7f5ae80"},
+    {file = "urllib3-1.26.3.tar.gz", hash = "sha256:de3eedaad74a2683334e282005cd8d7f22f4d55fa690a2a1020a416cb0a47e73"},
 ]
 virtualenv = [
     {file = "virtualenv-20.2.1-py2.py3-none-any.whl", hash = "sha256:07cff122e9d343140366055f31be4dcd61fd598c69d11cd33a9d9c8df4546dd7"},
