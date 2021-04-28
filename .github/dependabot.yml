@@ -1,0 +1,38 @@
+version: 2
+registries:
+  git-github-com:
+    type: git
+    url: https://github.com
+    username: x-access-token
+    password: "${{secrets.GIT_GITHUB_COM_PASSWORD}}"
+
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: numpy
+    versions:
+    - "> 1.19.3"
+  - dependency-name: urllib3
+    versions:
+    - 1.26.3
+  - dependency-name: tox
+    versions:
+    - 3.21.3
+    - 3.21.4
+    - 3.22.0
+  - dependency-name: autopep8
+    versions:
+    - 1.5.5
+  - dependency-name: pytest
+    versions:
+    - 6.2.2
+  - dependency-name: tensorboard
+    versions:
+    - 2.4.1
+  registries:
+  - git-github-com
