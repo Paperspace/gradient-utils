@@ -242,7 +242,7 @@ testing = ["coverage", "pyyaml"]
 
 [[package]]
 name = "mock"
-version = "4.0.2"
+version = "4.0.3"
 description = "Rolling backport of unittest.mock for all Pythons"
 category = "dev"
 optional = false
@@ -251,7 +251,7 @@ python-versions = ">=3.6"
 [package.extras]
 build = ["twine", "wheel", "blurb"]
 docs = ["sphinx"]
-test = ["pytest", "pytest-cov"]
+test = ["pytest (<5.4)", "pytest-cov"]
 
 [[package]]
 name = "networkx"
@@ -622,7 +622,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "fada1932a1a097083903e65345c743146e2a39b0ddbd327303a737dde107cf1f"
+content-hash = "46584b584d37de2b55e25fd9d11688933abc786d1b6d6984c48d20c289f99b61"
 
 [metadata.files]
 absl-py = [
@@ -757,8 +757,8 @@ markdown = [
     {file = "Markdown-3.3.3.tar.gz", hash = "sha256:5d9f2b5ca24bc4c7a390d22323ca4bad200368612b5aaa7796babf971d2b2f18"},
 ]
 mock = [
-    {file = "mock-4.0.2-py3-none-any.whl", hash = "sha256:3f9b2c0196c60d21838f307f5825a7b86b678cedc58ab9e50a8988187b4d81e0"},
-    {file = "mock-4.0.2.tar.gz", hash = "sha256:dd33eb70232b6118298d516bbcecd26704689c386594f0f3c4f13867b2c56f72"},
+    {file = "mock-4.0.3-py3-none-any.whl", hash = "sha256:122fcb64ee37cfad5b3f48d7a7d51875d7031aaf3d8be7c42e2bee25044eee62"},
+    {file = "mock-4.0.3.tar.gz", hash = "sha256:7d3fbbde18228f4ff2f1f119a45cdffa458b4c0dee32eb4d2bb2f82554bac7bc"},
 ]
 networkx = [
     {file = "networkx-2.5-py3-none-any.whl", hash = "sha256:8c5812e9f798d37c50570d15c4a69d5710a18d77bafc903ee9c5fba7454c616c"},
