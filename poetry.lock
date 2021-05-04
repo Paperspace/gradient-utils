@@ -76,6 +76,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "cloudpickle"
+version = "1.6.0"
+description = "Extended pickling support for Python objects"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[[package]]
 name = "colorama"
 version = "0.4.4"
 description = "Cross-platform colored terminal text."
@@ -163,23 +171,26 @@ protobuf = ["grpcio-tools (>=1.34.0)"]
 
 [[package]]
 name = "hyperopt"
-version = "0.1.2"
+version = "0.2.5"
 description = "Distributed Asynchronous Hyperparameter Optimization"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
+cloudpickle = "*"
 future = "*"
-networkx = "*"
+networkx = ">=2.2"
 numpy = "*"
-pymongo = "*"
 scipy = "*"
 six = "*"
 tqdm = "*"
 
 [package.extras]
-dill = ["dill"]
+atpe = ["lightgbm", "scikit-learn"]
+mongotrials = ["pymongo"]
+sparktrials = ["pyspark"]
+dev = ["black", "pre-commit", "nose", "pytest"]
 
 [[package]]
 name = "idna"
@@ -622,7 +633,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "fada1932a1a097083903e65345c743146e2a39b0ddbd327303a737dde107cf1f"
+content-hash = "0b9c4a61af9c20ec259d2ad30d199330bdd7919f9706f5ab9fa93c144b19e99f"
 
 [metadata.files]
 absl-py = [
@@ -655,6 +666,10 @@ certifi = [
 chardet = [
     {file = "chardet-3.0.4-py2.py3-none-any.whl", hash = "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"},
     {file = "chardet-3.0.4.tar.gz", hash = "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"},
+]
+cloudpickle = [
+    {file = "cloudpickle-1.6.0-py3-none-any.whl", hash = "sha256:3a32d0eb0bc6f4d0c57fbc4f3e3780f7a81e6fee0fa935072884d58ae8e1cc7c"},
+    {file = "cloudpickle-1.6.0.tar.gz", hash = "sha256:9bc994f9e9447593bd0a45371f0e7ac7333710fcf64a4eb9834bf149f4ef2f32"},
 ]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
@@ -732,9 +747,8 @@ grpcio = [
     {file = "grpcio-1.34.0.tar.gz", hash = "sha256:f98f746cacbaa681de0bcd90d7aa77b440e3e1327a9988f6a2b580d54e27d4c3"},
 ]
 hyperopt = [
-    {file = "hyperopt-0.1.2-py2-none-any.whl", hash = "sha256:2832a9f321ae1167dbd39a7382721933c6885b682ea90165dd90cd64938aa226"},
-    {file = "hyperopt-0.1.2-py3-none-any.whl", hash = "sha256:d95ac8a8dd14a56a1d52c0b0e8501c16463e99d3a9571e297058a6909131878c"},
-    {file = "hyperopt-0.1.2.tar.gz", hash = "sha256:df8c48a62bc1614bdc37f5cc570064a93a4b81a16559621db9acee3f6536b658"},
+    {file = "hyperopt-0.2.5-py2.py3-none-any.whl", hash = "sha256:dc5c7cceaf33c125b727cf92709e70035d94dd507831dae66406ac762a18a253"},
+    {file = "hyperopt-0.2.5.tar.gz", hash = "sha256:bc6047d50f956ae64eebcb34b1fd40f186a93e214957f20e87af2f10195295cc"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
