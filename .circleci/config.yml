@@ -12,7 +12,6 @@ commands:
           version: 19.03.13
       - run: sed -i 's/_version_/<<parameters.version>>/' Dockerfile.ci && mv Dockerfile.ci Dockerfile
       - run: make dc-setup
-      - run: make dc-test
   test-package-compatibility:
     steps:
       - checkout
