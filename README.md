@@ -1,7 +1,6 @@
 ![GitHubSplash](https://user-images.githubusercontent.com/585865/65443342-e630d300-ddfb-11e9-9bcd-de1d2033ea60.png)
 
-Gradient Utils
-=================
+# Gradient Utils
 
 ![PyPI](https://img.shields.io/pypi/v/gradient-utils)
 [![codecov](https://codecov.io/gh/Paperspace/gradient-utils/branch/master/graph/badge.svg)](https://codecov.io/gh/Paperspace/gradient-utils)
@@ -14,7 +13,7 @@ Gradient Utils
 
 <br>
 
-Gradient is an an end-to-end MLOps platform that enables individuals and organizations to quickly develop, train, and deploy Deep Learning models.  The Gradient software stack runs on any infrastructure e.g. AWS, GCP, on-premise and low-cost [Paperspace GPUs](https://gradient.paperspace.com/instances).  Leverage automatic versioning, distributed training, built-in graphs & metrics, hyperparameter search, GradientCI, 1-click Jupyter Notebooks, our Python SDK, and more. 
+Gradient is an an end-to-end MLOps platform that enables individuals and organizations to quickly develop, train, and deploy Deep Learning models. The Gradient software stack runs on any infrastructure e.g. AWS, GCP, on-premise and low-cost [Paperspace GPUs](https://gradient.paperspace.com/instances). Leverage automatic versioning, distributed training, built-in graphs & metrics, hyperparameter search, GradientCI, 1-click Jupyter Notebooks, our Python SDK, and more.
 
 This is an SDK for performing Machine Learning with Gradientº, it can be installed in addition to [gradient-cli](https://github.com/Paperspace/gradient-cli).
 
@@ -31,6 +30,7 @@ pip install gradient-utils
 # Usage
 
 ## Metrics
+
 Library for logging custom and framework metrics in Gradient.
 
 Usage example:
@@ -52,7 +52,7 @@ with init(sync_tensorboard=True):
 add_metrics({"loss": 0.25, "accuracy": 0.99})
 
 # Insert metrics with a step value
-# Note: add_metrics should be called once for a step. 
+# Note: add_metrics should be called once for a step.
 #       Multiple calls with the same step may result in loss of metrics.
 add_metrics({"loss": 0.25, "accuracy": 0.99}, step=0)
 
@@ -94,51 +94,6 @@ It can raise a `ConfigError` exception with message if there's a problem with it
 from gradient_utils import get_tf_config
 
 get_tf_config()
-```
-
-## Hyperparameter Tuning
-
-Currently, Gradientº only supports _Hyperopt_ for Hyperparameter Tuning.
-
-**hyper_tune()**
-
-Function to run hyperparameter tuning.
-
-It accepts the following arguments:
-
-- `train_model`
-  User model to tune.
-- `hparam_def`
-  User definition (scope) of search space.
-  To set this value, refer to [hyperopt documentation](https://github.com/hyperopt/hyperopt).
-- `algo`
-  Search algorithm.
-  _Default_: `tpe.suggest` (from hyperopt).
-- `max_ecals`
-  Maximum number of function evaluations to allow before returning.
-  _Default_: `25`.
-- `func`
-  Function to be run by hyper tune.
-  _Default_: `fmin` (from hyperopt). _Do not change this value if you do not know what you are doing!_
-
-It returns a dict with information about the tuning process.
-
-It can raise a `ConfigError` exception with message if there's no connection to MongoDB.
-
-**Note:** _You do not need to worry about setting your MongoDB version; it will be set within Paperspace infrastructure for hyperparameter tuning._
-
-**Usage example:**
-
-```python
-from gradient_utils import hyper_tune
-
-# Prepare model and search scope
-
-# minimal version
-argmin1 = hyper_tune(model, scope)
-
-# pass more arguments
-argmin2 = hyper_tune(model, scope, algo=tpe.suggest, max_evals=100)
 ```
 
 ## Utility Functions
@@ -246,6 +201,7 @@ model_path = job_name()
 # Contributing
 
 ## Setup
+
 We use Docker and Docker-compose to run the tests locally.
 
 ```
@@ -259,4 +215,3 @@ docker-compose -f docker-compose.ci.yml run utils poetry run pytest
 # To autoformat
 docker-compose run utils poetry run autopep8 --in-place --aggressive --aggressive --recursive .
 ```
-
