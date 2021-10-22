@@ -1,6 +1,6 @@
 FROM python:3.6
 
-RUN pip install poetry==1.1.4
+RUN pip install poetry==1.1.9
 
 WORKDIR /app
 

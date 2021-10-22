@@ -24,7 +24,6 @@ python = "^3.6"
 wheel = "^0.35.1"
 pymongo = "^3.11.0"
 prometheus-client = ">=0.8,<0.10"
-numpy = "1.18.5"
 
 [tool.poetry.dev-dependencies]
 tox = "^3.20.1"
@@ -32,7 +31,6 @@ mock = "^4.0.2"
 pytest = "^6.2.3"
 requests = "^2.24.0"
 autopep8 = "^1.5.4"
-tensorboard = "^2.4.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
